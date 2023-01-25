@@ -17,7 +17,7 @@ public class Project1 {
   static String formatDateAndTime(String date, String time, String argName) {
     String dateAndTime = "";
     try{
-      DateFormat dateFormat = new SimpleDateFormat("mm/dd/yyyy");
+      DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
       dateFormat.parse(date);
       dateFormat.setLenient(false);
       dateAndTime = date;
