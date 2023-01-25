@@ -2,13 +2,18 @@ package edu.pdx.cs410J.log9;
 
 import edu.pdx.cs410J.AbstractAirline;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Dictionary;
+import java.util.Iterator;
 
 public class Airline extends AbstractAirline<Flight> {
   private final String name;
+  private Collection<Flight> flights;
 
   public Airline(String name) {
     this.name = name;
+    this.flights = new ArrayList<Flight>();
   }
 
   @Override
@@ -18,11 +23,11 @@ public class Airline extends AbstractAirline<Flight> {
 
   @Override
   public void addFlight(Flight flight) {
-    throw new UnsupportedOperationException("This method is not implemented yet");
+    this.flights.add(flight);
   }
 
   @Override
   public Collection<Flight> getFlights() {
-    throw new UnsupportedOperationException("This method is not implemented yet");
+    return flights;
   }
 }
