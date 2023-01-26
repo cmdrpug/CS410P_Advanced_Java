@@ -13,6 +13,16 @@ import static java.lang.Integer.parseInt;
  */
 public class Project1 {
 
+  /**
+   *  Returns a String with the date and time arguments concatenated if both arguments
+   *  are valid dates and times respectively. Prints error message and returns null if
+   *  either argument does not match the format.
+   *
+   * @param date the date portion of the command line argument
+   * @param time the time portion of the command line argument
+   * @param argName which argument the date and time is for, used for error messages
+   * @return returns the string dateAndTime if successful, otherwise null
+   */
   @VisibleForTesting
   static String formatDateAndTime(String date, String time, String argName) {
     String dateAndTime = "";
@@ -34,6 +44,12 @@ public class Project1 {
     return dateAndTime;
   }
 
+  /**
+   * Gets the README.txt file as a resource and prints each line to console.
+   * Will throw an IOException if it fails for any reason.
+   *
+   * @throws IOException if the reader fails for any reason
+   */
   static void printREADME() throws IOException {
     try (
       InputStream readme = Project1.class.getResourceAsStream("README.txt")
@@ -46,6 +62,32 @@ public class Project1 {
     }
   }
 
+  /**
+   * The overall purpose of main is the read and check the arguments and then create
+   * the airline and flight using those arguments as parameters. It is split up into
+   * three steps
+   *
+   * First step is the options checking. In a for loop, an argument is checked for
+   * starting with the '-' character. If it does, it's respective option clause is
+   * run and firstNonOptionArg is incremented to track the start of normal arguments.
+   * If it isn't a valid option, the program prints a message and returns. When the
+   * first argument to not start with '-' is encountered, this step ends.
+   *
+   * Step two is parsing arguments. If the remaining argument is not 8 after step one,
+   * a message instructing how to use will be printed and the program will return.
+   * Most arguments have some kind of restriction for what they can be. If the argument
+   * passes its restriction, then it is assigned to a variable to be used later. If any
+   * argument does not pass its restriction, a message including which argument failed
+   * is printed and the program returns. After the last argument is parsed, this step
+   * ends.
+   *
+   * Finally, step three is creating and optionally printing the objects. A new Airline
+   * with the airlineName argument is created. Then a new Flight is created with the
+   * remaining parsed arguments. The flight is added to the airline and then if -print
+   * was included, all elements of the airlines flights field are printed.
+   *
+   * @param args The command line arguments are used for options and values for the flight and airline
+   */
   public static void main(String[] args){
     int firstNonOptionArg = 0;
     boolean printFlight = false;
@@ -71,6 +113,7 @@ public class Project1 {
       else
         break;
     }
+
 
     if(args.length - firstNonOptionArg != 8){
       System.err.println(
@@ -139,6 +182,7 @@ public class Project1 {
     if(arrive == null){
       return;
     }
+
 
     Airline airline = new Airline(airlineName);
     Flight flight = new Flight(src, dest, depart, arrive, flightNumber);

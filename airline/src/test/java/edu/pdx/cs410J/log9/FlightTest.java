@@ -8,34 +8,69 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit tests for the {@link Flight} class.*
- * You'll need to update these unit tests as you build out you program.
  */
 public class FlightTest {
-
   /**
-   * This unit test will need to be modified (likely deleted) as you implement
-   * your project.
+   * Utility function to create a Flight object
+   *
+   * @return a Flight object with correctly parsed values
    */
-  @Test
-  void getArrivalStringNeedsToBeImplemented() {
-    //Flight flight = new Flight();
-    //assertThrows(UnsupportedOperationException.class, flight::getArrivalString);
+  Flight testFlightConstructor() {
+    return new Flight("PDX", "LAX", "12/12/2005 1:55", "1/2/2005 11:19", 2854);
   }
 
   /**
-   * This unit test will need to be modified (likely deleted) as you implement
-   * your project.
+   * Creates a flight object and calls toString() to check if it matches what is expected
    */
   @Test
-  void initiallyAllFlightsHaveTheSameNumber() {
-    //Flight flight = new Flight();
-    //assertThat(flight.getNumber(), equalTo(42));
+  void testFlightToString() {
+    Flight testFlight = testFlightConstructor();
+    assertThat(testFlight.toString(), is("Flight 2854 departs PDX at 12/12/2005 1:55 arrives LAX at 1/2/2005 11:19"));
   }
 
+  /**
+   * Creates a flight object and calls getNumber() to check if it matches what is expected
+   */
   @Test
-  void forProject1ItIsOkayIfGetDepartureTimeReturnsNull() {
-    //Flight flight = new Flight();
-    //assertThat(flight.getDeparture(), is(nullValue()));
+  void testGetNumber() {
+    Flight testFlight = testFlightConstructor();
+    assertThat(testFlight.getNumber(), is(2854));
+  }
+
+  /**
+   * Creates a flight object and calls getSource() to check if it matches what is expected
+   */
+  @Test
+  void testGetSource() {
+    Flight testFlight = testFlightConstructor();
+    assertThat(testFlight.getSource(), is("PDX"));
+  }
+
+  /**
+   * Creates a flight object and calls getDepartureString() to check if it matches what is expected
+   */
+  @Test
+  void testGetDepartureString() {
+    Flight testFlight = testFlightConstructor();
+    assertThat(testFlight.getDepartureString(), is("12/12/2005 1:55"));
+  }
+
+  /**
+   * Creates a flight object and calls getDestination() to check if it matches what is expected
+   */
+  @Test
+  void testGetDestination() {
+    Flight testFlight = testFlightConstructor();
+    assertThat(testFlight.getDestination(), is("LAX"));
+  }
+
+  /**
+   * Creates a flight object and calls getArrivalString() to check if it matches what is expected
+   */
+  @Test
+  void testGetArrivalString() {
+    Flight testFlight = testFlightConstructor();
+    assertThat(testFlight.getArrivalString(), is("1/2/2005 11:19"));
   }
   
 }
