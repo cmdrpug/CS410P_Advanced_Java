@@ -85,7 +85,7 @@ public class TextParser implements AirlineParser<Airline> {
             argCounter += 2;
             String depart = formatDateAndTime(departDate, departTime, "depart");
             if(depart == null){
-              throw new ParserException("File format is incorrect");
+              throw new ParserException("Departure is formatted incorrectly on lines " + (counter + (argCounter - 7)) + " and " + (counter + (argCounter - 6)));
             }
 
             String dest = "";
@@ -103,7 +103,7 @@ public class TextParser implements AirlineParser<Airline> {
             argCounter += 2;
             String arrive = formatDateAndTime(arriveDate, arriveTime, "arrive");
             if(arrive == null){
-              throw new ParserException("File format is incorrect");
+              throw new ParserException("Departure is formatted incorrectly on lines " + (counter + (argCounter - 7)) + " and " + (counter + (argCounter - 6)));
             }
 
 
