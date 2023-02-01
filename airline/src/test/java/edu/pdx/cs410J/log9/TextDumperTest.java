@@ -10,8 +10,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
+/**
+ * Unit tests for the {@link TextDumper} class.*
+ */
 public class TextDumperTest {
 
+  /**
+   * Simple test to see if the TextDumper can write a string back
+   */
   @Test
   void airlineNameIsDumpedInTextFormat() {
     String airlineName = "Test Airline";
@@ -25,6 +31,13 @@ public class TextDumperTest {
     assertThat(text, containsString(airlineName));
   }
 
+  /**
+   * Tests if an airline can be written to a temporary file and retrieved by the {@link TextParser} class
+   *
+   * @param tempDir The File for the Airline to be written to
+   * @throws IOException if the file is not found
+   * @throws ParserException if the written file does not match the correct format
+   */
   @Test
   void canParseTextWrittenByTextDumper(@TempDir File tempDir) throws IOException, ParserException {
     String airlineName = "Test Airline";

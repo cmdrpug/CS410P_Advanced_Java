@@ -223,7 +223,7 @@ public class Project2 {
         }
         airline.addFlight(newFlight);
       } catch (ParserException e){
-        System.err.println("File formatting is incorrect, could not be read");
+        System.err.println("File formatting is incorrect: " + e.toString().substring(e.toString().lastIndexOf(":")+1));
         return;
       } catch (FileNotFoundException e) {
         airline = new Airline(airlineName);

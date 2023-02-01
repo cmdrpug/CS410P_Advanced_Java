@@ -12,15 +12,33 @@ import static edu.pdx.cs410J.log9.Project2.formatDateAndTime;
 import static java.lang.Integer.parseInt;
 
 /**
- * A skeletal implementation of the <code>TextParser</code> class for Project 2.
+ * The TextParser class implements AirlineParser interface.
+ * It is used to read files that are formatted by the TextDumper
+ * class back into memory during runtime.
  */
 public class TextParser implements AirlineParser<Airline> {
   private final Reader reader;
 
+  /**
+   * Constructor for the Parser. Just assigns the FileReader to the reader variable
+   *
+   * @param reader The FileReader that will be read from
+   */
   public TextParser(Reader reader) {
     this.reader = reader;
   }
 
+  /**
+   * The Parse method first just checks if the file is empty. If it is
+   * it throws a Parser exception. Then is goes into a while loop filling each element
+   * of an array with a line from the file until it reaches 7. At that point it takes
+   * the array and parses those elements. If there is a problem with an element, a
+   * ParserException is thrown. If it succeeds, a flight is created and added to the airline
+   * before the array is cleared and the loop continues until the end of file.
+   *
+   * @return The airline on successful parsing
+   * @throws ParserException any time that a read in line doesn't match the format
+   */
   @Override
   public Airline parse() throws ParserException {
     try (
@@ -48,15 +66,15 @@ public class TextParser implements AirlineParser<Airline> {
             try{
               flightNumber = parseInt(args[argCounter]);
             } catch (NumberFormatException err){
-              throw new ParserException("File format is incorrect");
+              throw new ParserException("Number expected on line " + (counter + (argCounter - 5)));
             }
             ++argCounter;
 
             String src = "";
             if(args[argCounter].length() != 3){
-              throw new ParserException("File format is incorrect");
+              throw new ParserException("Source is not 3 letters long on line " + (counter + (argCounter - 5)));
             } else if(!(args[argCounter].matches("[a-zA-Z]+"))){
-              throw new ParserException("File format is incorrect");
+              throw new ParserException("Source can only include letters on line " + (counter + (argCounter - 5)));
             } else{
               src = args[argCounter].toUpperCase();
             }
@@ -67,14 +85,14 @@ public class TextParser implements AirlineParser<Airline> {
             argCounter += 2;
             String depart = formatDateAndTime(departDate, departTime, "depart");
             if(depart == null){
-              return null;
+              throw new ParserException("File format is incorrect");
             }
 
             String dest = "";
             if(args[argCounter].length() != 3){
-              throw new ParserException("File format is incorrect");
+              throw new ParserException("Destination is not 3 letters long on line " + (counter + (argCounter - 5)));
             } else if(!(args[argCounter].matches("[a-zA-Z]+"))){
-              throw new ParserException("File format is incorrect");
+              throw new ParserException("Destination can only include letters on line " + (counter + (argCounter - 5)));
             } else{
               dest = args[argCounter].toUpperCase();
             }
@@ -97,11 +115,8 @@ public class TextParser implements AirlineParser<Airline> {
           }
         }
       } catch (IOException e) {
-        throw new RuntimeException(e);
-      } catch (NumberFormatException e) {
-        throw new RuntimeException(e);
+        throw new ParserException("While parsing airline text", e);
       }
-
 
       return airline;
 

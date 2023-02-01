@@ -93,26 +93,38 @@ class Project2IT extends InvokeMainTestCase {
         assertThat(result.getTextWrittenToStandardError(), containsString("dest must be a 3 letters long"));
     }
 
+    /**
+     * Tests the -README argument prints the readme
+     */
     @Test
     void testReadmeOption() {
         MainMethodResult result = invokeMain("-README");
         assertThat(result.getTextWrittenToStandardOut(), containsString("This is a README file!"));
     }
 
+    /**
+     * Tests that using the -textFile option multiple times issues an error
+     */
     @Test
     void multipleTextFileOptions() {
         MainMethodResult result = invokeMain("-print", "-textFile", "text.txt", "-textFile", "text2.txt", "airline", "8932", "PDX", "12/12/2005", "1:55", "Ga ga", "1/2/2005", "11:19");
         assertThat(result.getTextWrittenToStandardError(), containsString("Multiple .txt files cannot be used"));
     }
 
+    /**
+     * Tests that the text file missing ".txt" extension issues an error
+     */
     @Test
     void textFileOptionMissionExtension() {
         MainMethodResult result = invokeMain("-print", "-textFile", "text", "airline", "8932", "PDX", "12/12/2005", "1:55", "Ga ga", "1/2/2005", "11:19");
         assertThat(result.getTextWrittenToStandardError(), containsString("The specified file must be a .txt file"));
     }
 
+    /**
+     * Tests that invoking the main method with a .txt file that doesn't exist still works
+     */
     @Test
-    void textFileNotFoundException(){
+    void textFileNotFound(){
         MainMethodResult result = invokeMain("-print", "-textFile", "text.txt", "airline", "8932", "PDX", "12/12/2005", "1:55", "LAX", "1/2/2005", "11:19");
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 8932 departs PDX at 12/12/2005 1:55 arrives LAX at 1/2/2005 11:19"));
     }
