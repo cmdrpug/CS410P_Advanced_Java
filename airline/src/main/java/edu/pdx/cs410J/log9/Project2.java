@@ -1,6 +1,7 @@
 package edu.pdx.cs410J.log9;
 
 import com.google.common.annotations.VisibleForTesting;
+import edu.pdx.cs410J.ParserException;
 
 import java.io.*;
 import java.text.DateFormat;
@@ -11,7 +12,7 @@ import static java.lang.Integer.parseInt;
 /**
  * The main class for the CS410J airline Project
  */
-public class Project1 {
+public class Project2 {
 
   /**
    *  Returns a String with the date and time arguments concatenated if both arguments
@@ -52,7 +53,7 @@ public class Project1 {
    */
   static void printREADME() throws IOException {
     try (
-      InputStream readme = Project1.class.getResourceAsStream("README.txt")
+      InputStream readme = Project2.class.getResourceAsStream("README.txt")
     ) {
       BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
       String line;
@@ -90,6 +91,7 @@ public class Project1 {
    */
   public static void main(String[] args){
     int firstNonOptionArg = 0;
+    String textFile = null;
     boolean printFlight = false;
     for(int i = 0; i < args.length; ++i){
       if (args[i].charAt(0) == '-'){
@@ -103,9 +105,22 @@ public class Project1 {
           return;
         } else if (args[i].equals("-print")) {
           printFlight = true;
+        } else if (args[i].equals("-textFile")) {
+          if(textFile != null){
+            System.err.println("Multiple .txt files cannot be used");
+            return;
+          } else {
+            textFile = args[i + 1];
+            if(textFile == null  || textFile.equals("txt") || !(textFile.substring(textFile.lastIndexOf(".") + 1).equals("txt"))){
+              System.err.println("The specified file must be a .txt file");
+              return;
+            }
+            ++firstNonOptionArg;
+            ++i;
+          }
         }
         else{
-          System.err.println("Invalid Option: " + args[i] + " was supplied.");
+          System.err.println("Invalid Option: " + args[i] + " was supplied");
           return;
         }
         ++firstNonOptionArg;
@@ -118,9 +133,7 @@ public class Project1 {
     if(args.length - firstNonOptionArg != 8){
       System.err.println(
         "Incorrect number of arguments supplied.\n" +
-        "Usage: java -jar target/airline-2023.0.0.jar [options] <args>"
-      );
-      System.out.println(
+        "Usage: java -jar target/airline-2023.0.0.jar [options] <args>" +
         "args are (in this order):\n" +
         "airline \t\t The name of the airline\n" +
         "flightNumber \t The flight number\n" +
@@ -150,8 +163,11 @@ public class Project1 {
     ++argCounter;
 
     String src = "";
-    if(args[argCounter].length() != 3 || !(args[argCounter].matches("[a-zA-Z]+"))){
-      System.err.println("src must be a 3 letter code");
+    if(args[argCounter].length() != 3){
+      System.err.println("src must be a 3 letters long");
+      return;
+    } else if(!(args[argCounter].matches("[a-zA-Z]+"))){
+      System.err.println("src must contain only letters");
       return;
     } else{
       src = args[argCounter].toUpperCase();
@@ -167,8 +183,11 @@ public class Project1 {
     }
 
     String dest = "";
-    if(args[argCounter].length() != 3 || !(args[argCounter].matches("[a-zA-Z]+"))){
-      System.err.println("dest must be a 3 letter code");
+    if(args[argCounter].length() != 3){
+      System.err.println("dest must be a 3 letters long");
+      return;
+    } else if(!(args[argCounter].matches("[a-zA-Z]+"))){
+      System.err.println("dest must contain only letters");
       return;
     } else{
       dest = args[argCounter].toUpperCase();
@@ -184,14 +203,40 @@ public class Project1 {
     }
 
 
-    Airline airline = new Airline(airlineName);
-    Flight flight = new Flight(src, dest, depart, arrive, flightNumber);
-    airline.addFlight(flight);
+    Flight newFlight = new Flight(src, dest, depart, arrive, flightNumber);
+    if(textFile != null){
+      Airline airline = null;
+      try{
+        TextParser textParser = new TextParser(new FileReader(textFile));
+        airline = textParser.parse();
+        if(!(airline.getName().equals(airlineName))){
+          System.err.println("The airline name provided on the command line does not match the one on file");
+          return;
+        }
+        airline.addFlight(newFlight);
+      } catch (ParserException e){
+        System.err.println("File formatting is incorrect, could not be read");
+        return;
+      } catch (FileNotFoundException e) {
+        airline = new Airline(airlineName);
+        airline.addFlight(newFlight);
+      }
+
+      try{
+        TextDumper textDumper = new TextDumper(new FileWriter(textFile));
+        textDumper.dump(airline);
+      } catch (IOException e) {
+        System.err.println("File could not be created to write to");
+        return;
+      }
+    } else{
+      Airline airline = new Airline(airlineName);
+      airline.addFlight(newFlight);
+    }
+
 
     if(printFlight){
-      for(Flight currentFlight: airline.getFlights()) {
-        System.out.println(currentFlight.toString());
-      }
+      System.out.println(newFlight);
     }
   }
 }

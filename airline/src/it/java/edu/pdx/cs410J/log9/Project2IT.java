@@ -7,15 +7,15 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * An integration test for the {@link Project1} main class.
+ * An integration test for the {@link Project2} main class.
  */
-class Project1IT extends InvokeMainTestCase {
+class Project2IT extends InvokeMainTestCase {
 
     /**
-     * Invokes the main method of {@link Project1} with the given arguments.
+     * Invokes the main method of {@link Project2} with the given arguments.
      */
     private MainMethodResult invokeMain(String... args) {
-        return invokeMain( Project1.class, args );
+        return invokeMain( Project2.class, args );
     }
 
   /**
@@ -60,7 +60,7 @@ class Project1IT extends InvokeMainTestCase {
     @Test
     void testInvalidOption() {
         MainMethodResult result = invokeMain("-corn", "airline", "8932", "PDX", "12/12/2005", "1:55", "LAX", "1/2/2005", "11:19");
-        assertThat(result.getTextWrittenToStandardError(), containsString("Invalid Option: -corn was supplied."));
+        assertThat(result.getTextWrittenToStandardError(), containsString("Invalid Option: -corn was supplied"));
     }
 
     /**
@@ -78,7 +78,7 @@ class Project1IT extends InvokeMainTestCase {
     @Test
     void testSrcIsNotAThreeLetterCode() {
         MainMethodResult result = invokeMain("-print", "airline", "8932", "Goo goo", "12/12/2005", "1:55", "LAX", "1/2/2005", "11:19");
-        assertThat(result.getTextWrittenToStandardError(), containsString("src must be a 3 letter code"));
+        assertThat(result.getTextWrittenToStandardError(), containsString("src must be a 3 letters long"));
     }
 
     /**
@@ -87,6 +87,30 @@ class Project1IT extends InvokeMainTestCase {
     @Test
     void testDestIsNotAThreeLetterCode() {
         MainMethodResult result = invokeMain("-print", "airline", "8932", "PDX", "12/12/2005", "1:55", "Ga ga", "1/2/2005", "11:19");
-        assertThat(result.getTextWrittenToStandardError(), containsString("dest must be a 3 letter code"));
+        assertThat(result.getTextWrittenToStandardError(), containsString("dest must be a 3 letters long"));
     }
+
+    @Test
+    void testReadmeOption() {
+        MainMethodResult result = invokeMain("-README");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("This is a README file!"));
+    }
+
+    @Test
+    void multipleTextFileOptions() {
+        MainMethodResult result = invokeMain("-print", "-textFile", "text.txt", "-textFile", "text2.txt", "airline", "8932", "PDX", "12/12/2005", "1:55", "Ga ga", "1/2/2005", "11:19");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Multiple .txt files cannot be used"));
+    }
+
+    @Test
+    void textFileOptionMissionExtension() {
+        MainMethodResult result = invokeMain("-print", "-textFile", "text", "airline", "8932", "PDX", "12/12/2005", "1:55", "Ga ga", "1/2/2005", "11:19");
+        assertThat(result.getTextWrittenToStandardError(), containsString("The specified file must be a .txt file"));
+    }
+
+    /*@Test
+    void textFileCorrectPath() {
+        MainMethodResult result = invokeMain("-print", "-textFile", "text.txt", "airline", "8932", "PDX", "12/12/2005", "1:55", "Ga ga", "1/2/2005", "11:19");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 8932 departs PDX at 12/12/2005 1:55 arrives LAX at 1/2/2005 11:19"));
+    }*/
 }
