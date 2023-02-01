@@ -66,7 +66,7 @@ public class Project2 {
   /**
    * The overall purpose of main is the read and check the arguments and then create
    * the airline and flight using those arguments as parameters. It is split up into
-   * three steps
+   * four steps
    *
    * First step is the options checking. In a for loop, an argument is checked for
    * starting with the '-' character. If it does, it's respective option clause is
@@ -82,16 +82,22 @@ public class Project2 {
    * is printed and the program returns. After the last argument is parsed, this step
    * ends.
    *
-   * Finally, step three is creating and optionally printing the objects. A new Airline
-   * with the airlineName argument is created. Then a new Flight is created with the
-   * remaining parsed arguments. The flight is added to the airline and then if -print
-   * was included, all elements of the airlines flights field are printed.
+   * Step three is creating the airline and there are two main paths. If the textFile option
+   * was not included, a new Airline is created with the airlineName argument and the new Flight
+   * is added. If the textFile option was included and is a .txt file, then the reading/writing
+   * branch is entered. If the file was not found, then a new Airline is created exactly like the
+   * other path. If it was found and is formatted correctly, it is parsed into a new Airline from
+   * the contents of the file, and then the new Flight from the command line is added after. After
+   * the airline exists, it is written back to the same file or a new one if it didn't exist.
+   *
+   * Finally, step four is optionally printing the objects. The new flight created from
+   * the command line is printed to System.out.
    *
    * @param args The command line arguments are used for options and values for the flight and airline
    */
   public static void main(String[] args){
     int firstNonOptionArg = 0;
-    String textFile = null;
+    File textFile = null;
     boolean printFlight = false;
     for(int i = 0; i < args.length; ++i){
       if (args[i].charAt(0) == '-'){
@@ -110,11 +116,11 @@ public class Project2 {
             System.err.println("Multiple .txt files cannot be used");
             return;
           } else {
-            textFile = args[i + 1];
-            if(textFile == null  || textFile.equals("txt") || !(textFile.substring(textFile.lastIndexOf(".") + 1).equals("txt"))){
+            if(args[i + 1] == null  || args[i + 1].equals("txt") || !(args[i + 1].substring(args[i + 1].lastIndexOf(".") + 1).equals("txt"))){
               System.err.println("The specified file must be a .txt file");
               return;
             }
+            textFile = new File(args[i + 1]);
             ++firstNonOptionArg;
             ++i;
           }
@@ -144,6 +150,7 @@ public class Project2 {
         "options are (options may appear in any order):\n" +
         "-print \t\t\t Prints a description of the new flight\n" +
         "-README \t\t Prints a README for this project and exits\n" +
+        "-TextFile file \t Where to read/write the airline info\n" +
         "Date and time should be in the format: mm/dd/yyyy hh:mm"
       );
       return;
@@ -204,10 +211,11 @@ public class Project2 {
 
 
     Flight newFlight = new Flight(src, dest, depart, arrive, flightNumber);
+    Airline airline = null;
     if(textFile != null){
-      Airline airline = null;
       try{
-        TextParser textParser = new TextParser(new FileReader(textFile));
+        Reader reader = new FileReader(textFile);
+        TextParser textParser = new TextParser(reader);
         airline = textParser.parse();
         if(!(airline.getName().equals(airlineName))){
           System.err.println("The airline name provided on the command line does not match the one on file");
@@ -230,7 +238,7 @@ public class Project2 {
         return;
       }
     } else{
-      Airline airline = new Airline(airlineName);
+      airline = new Airline(airlineName);
       airline.addFlight(newFlight);
     }
 

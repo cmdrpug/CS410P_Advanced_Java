@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TextParserTest {
 
@@ -30,5 +30,15 @@ public class TextParserTest {
 
     TextParser parser = new TextParser(new InputStreamReader(resource));
     assertThrows(ParserException.class, parser::parse);
+  }
+
+  @Test
+  void testCorrectPath() throws ParserException {
+    InputStream resource = getClass().getResourceAsStream("test.txt");
+    assertThat(resource, notNullValue());
+
+    TextParser parser = new TextParser(new InputStreamReader(resource));
+    Airline airline = parser.parse();
+    assertNotNull(airline);
   }
 }
