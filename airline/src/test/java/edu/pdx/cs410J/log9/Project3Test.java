@@ -7,19 +7,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import static edu.pdx.cs410J.log9.Project2.formatDateAndTime;
-import static edu.pdx.cs410J.log9.Project2.printREADME;
+import static edu.pdx.cs410J.log9.Project3.formatDateAndTime;
+import static edu.pdx.cs410J.log9.Project3.printREADME;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
- * A unit test for code in the <code>Project2</code> class.  This is different
- * from <code>Project2IT</code> which is an integration test (and can capture data)
+ * A unit test for code in the <code>Project3</code> class.  This is different
+ * from <code>Project3IT</code> which is an integration test (and can capture data)
  * written to {@link System#out} and the like.
  */
-class Project2Test {
+class Project3Test {
 
   /**
    * Test to see if the README.txt file is readable as a resource
@@ -30,7 +30,7 @@ class Project2Test {
   @Test
   void readmeCanBeReadAsResource() throws IOException {
     try (
-      InputStream readme = Project2.class.getResourceAsStream("README.txt")
+      InputStream readme = Project3.class.getResourceAsStream("README.txt")
     ) {
       assertThat(readme, not(nullValue()));
       BufferedReader reader = new BufferedReader(new InputStreamReader(readme));

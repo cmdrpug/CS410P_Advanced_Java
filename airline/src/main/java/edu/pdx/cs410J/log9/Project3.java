@@ -1,6 +1,7 @@
 package edu.pdx.cs410J.log9;
 
 import com.google.common.annotations.VisibleForTesting;
+import edu.pdx.cs410J.AirportNames;
 import edu.pdx.cs410J.ParserException;
 
 import java.io.*;
@@ -12,7 +13,7 @@ import static java.lang.Integer.parseInt;
 /**
  * The main class for the CS410J airline Project
  */
-public class Project2 {
+public class Project3 {
 
   /**
    *  Returns a String with the date and time arguments concatenated if both arguments
@@ -53,7 +54,7 @@ public class Project2 {
    */
   static void printREADME() throws IOException {
     try (
-      InputStream readme = Project2.class.getResourceAsStream("README.txt")
+      InputStream readme = Project3.class.getResourceAsStream("README.txt")
     ) {
       BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
       String line;
@@ -98,6 +99,8 @@ public class Project2 {
   public static void main(String[] args){
     int firstNonOptionArg = 0;
     File textFile = null;
+    File prettyFile = null;
+    boolean prettyPrint = false;
     boolean printFlight = false;
     for(int i = 0; i < args.length; ++i){
       if (args[i].charAt(0) == '-'){
@@ -124,6 +127,18 @@ public class Project2 {
             ++firstNonOptionArg;
             ++i;
           }
+        } else if(args[i].equals("-pretty")){
+          if(prettyFile != null){
+            System.err.println("Multiple .txt files cannot be used");
+            return;
+          } else if ((args[i + 1].substring(args[i + 1].lastIndexOf(".") + 1).equals("txt"))) {
+            prettyFile = new File(args[i + 1]);
+            prettyPrint = true;
+            ++firstNonOptionArg;
+            ++i;
+          } else {
+            prettyPrint = true;
+          }
         }
         else{
           System.err.println("Invalid Option: " + args[i] + " was supplied");
@@ -134,7 +149,6 @@ public class Project2 {
       else
         break;
     }
-
 
     if(args.length - firstNonOptionArg != 8){
       System.err.println(
@@ -148,9 +162,11 @@ public class Project2 {
         "dest \t\t\t Three-letter code of arrival airport\n" +
         "arrive \t\t Arrival date and time (24-hour time)\n\n" +
         "options are (options may appear in any order):\n" +
+        "-pretty file \t Pretty print the airline’s flights to\n" +
+        "\t\t\t\t a text file or standard out (file -)\n" +
+        "-TextFile file \t Where to read/write the airline info\n" +
         "-print \t\t\t Prints a description of the new flight\n" +
         "-README \t\t Prints a README for this project and exits\n" +
-        "-TextFile file \t Where to read/write the airline info\n" +
         "Date and time should be in the format: mm/dd/yyyy hh:mm"
       );
       return;
@@ -176,7 +192,10 @@ public class Project2 {
     } else if(!(args[argCounter].matches("[a-zA-Z]+"))){
       System.err.println("src must contain only letters");
       return;
-    } else{
+    } else if(AirportNames.getName(args[argCounter]) == null) {
+      System.err.println("src must be a known airport code");
+      return;
+    } else {
       src = args[argCounter].toUpperCase();
     }
     ++argCounter;
@@ -195,6 +214,9 @@ public class Project2 {
       return;
     } else if(!(args[argCounter].matches("[a-zA-Z]+"))){
       System.err.println("dest must contain only letters");
+      return;
+    } else if(AirportNames.getName(args[argCounter]) == null) {
+      System.err.println("dest must be a known airport code");
       return;
     } else{
       dest = args[argCounter].toUpperCase();

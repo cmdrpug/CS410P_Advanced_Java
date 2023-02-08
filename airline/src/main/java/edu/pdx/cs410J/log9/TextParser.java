@@ -1,14 +1,14 @@
 package edu.pdx.cs410J.log9;
 
 import edu.pdx.cs410J.AirlineParser;
+import edu.pdx.cs410J.AirportNames;
 import edu.pdx.cs410J.ParserException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 
-import static edu.pdx.cs410J.log9.Project2.formatDateAndTime;
+import static edu.pdx.cs410J.log9.Project3.formatDateAndTime;
 import static java.lang.Integer.parseInt;
 
 /**
@@ -75,6 +75,8 @@ public class TextParser implements AirlineParser<Airline> {
               throw new ParserException("Source is not 3 letters long on line " + (counter + (argCounter - 5)));
             } else if(!(args[argCounter].matches("[a-zA-Z]+"))){
               throw new ParserException("Source can only include letters on line " + (counter + (argCounter - 5)));
+            } else if(AirportNames.getName(args[argCounter]) == null) {
+              throw new ParserException("Source code must be a known airport on line " + (counter + (argCounter - 5)));
             } else{
               src = args[argCounter].toUpperCase();
             }
@@ -93,6 +95,8 @@ public class TextParser implements AirlineParser<Airline> {
               throw new ParserException("Destination is not 3 letters long on line " + (counter + (argCounter - 5)));
             } else if(!(args[argCounter].matches("[a-zA-Z]+"))){
               throw new ParserException("Destination can only include letters on line " + (counter + (argCounter - 5)));
+            } else if(AirportNames.getName(args[argCounter]) == null) {
+              throw new ParserException("Source code must be a known airport on line " + (counter + (argCounter - 5)));
             } else{
               dest = args[argCounter].toUpperCase();
             }
