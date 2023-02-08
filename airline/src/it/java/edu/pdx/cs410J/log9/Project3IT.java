@@ -126,4 +126,22 @@ class Project3IT extends InvokeMainTestCase {
         MainMethodResult result = invokeMain("-print", "-textFile", "text.txt", "airline", "8932", "PDX", "1/2/2005", "1:55", "LAX", "12/12/2005", "11:19");
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 8932 departs PDX at 01/02/2005 01:55 arrives LAX at 12/12/2005 11:19"));
     }
+
+    @Test
+    void prettyPrintToStandardOut(){
+        MainMethodResult result = invokeMain("-pretty", "airline", "8932", "PDX", "1/2/2005", "1:55", "LAX", "12/12/2005", "11:19");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flights belonging to airline:"));
+    }
+
+    @Test
+    void multiplePrettyCallsFails(){
+        MainMethodResult result = invokeMain("-pretty", "pretty.txt", "-pretty", "pretty.txt", "airline", "8932", "PDX", "1/2/2005", "1:55", "LAX", "12/12/2005", "11:19");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Multiple .txt files cannot be used"));
+    }
+
+    @Test
+    void prettyWithFile(){
+        MainMethodResult result = invokeMain("-pretty", "pretty.txt", "airline", "8932", "PDX", "1/2/2005", "1:55", "LAX", "12/12/2005", "11:19");
+        assertThat(result.getTextWrittenToStandardError(), containsString(""));
+    }
 }

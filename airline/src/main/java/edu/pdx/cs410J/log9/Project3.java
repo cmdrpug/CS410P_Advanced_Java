@@ -17,7 +17,7 @@ import static java.lang.Integer.parseInt;
 public class Project3 {
 
   /**
-   *  Returns a String with the date and time arguments concatenated if both arguments
+   *  Returns a Date with the date and time arguments concatenated if both arguments
    *  are valid dates and times respectively. Prints error message and returns null if
    *  either argument does not match the format.
    *
@@ -268,9 +268,24 @@ public class Project3 {
       airline.addFlight(newFlight);
     }
 
-
     if(printFlight){
-      System.out.println(newFlight);
+      System.out.println("Newly added flight: \n" + newFlight + "\n");
+    }
+
+    if(prettyPrint){
+      if(prettyFile != null){
+        try{
+          PrettyPrinter prettyPrinter = new PrettyPrinter(new FileWriter(prettyFile));
+          prettyPrinter.dump(airline);
+        } catch (IOException e) {
+          System.err.println("File could not be created to write to");
+          return;
+        }
+      }
+      else{
+        PrettyPrinter prettyPrinter = new PrettyPrinter(new PrintWriter(System.out));
+        prettyPrinter.dump(airline);
+      }
     }
   }
 }

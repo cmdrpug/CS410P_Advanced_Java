@@ -2,10 +2,7 @@ package edu.pdx.cs410J.log9;
 
 import edu.pdx.cs410J.AbstractAirline;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Dictionary;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * The Airline class which extends the AbstractAirline class. The name
@@ -38,13 +35,14 @@ public class Airline extends AbstractAirline<Flight> {
   }
 
   /**
-   * Adds a Flight object to the end of the flights variable.
+   * Adds a Flight object to the end of the flights variable and then sorts the list.
    *
    * @param flight the Flight object to add to the flights variable
    */
   @Override
   public void addFlight(Flight flight) {
     this.flights.add(flight);
+    Collections.sort((ArrayList)this.flights);
   }
 
   /**

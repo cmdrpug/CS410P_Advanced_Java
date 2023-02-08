@@ -11,7 +11,7 @@ import java.util.Date;
  * are final because they shouldn't change while some are mutable since they
  * are likely to change.
  */
-public class Flight extends AbstractFlight {
+public class Flight extends AbstractFlight implements Comparable<Flight>{
 
   private final String src;
   private final String dest;
@@ -86,5 +86,31 @@ public class Flight extends AbstractFlight {
     dateFormat.setLenient(false);
     String arriveString = dateFormat.format(this.arrive);
     return arriveString;
+  }
+
+  /**
+   * Comparable interface which orders first by src alphabetically, and then
+   * depart chronologically.
+   *
+   * @param o the object to be compared.
+   * @return 1 if the o is less than the object, -1 if it is greater, and 0 if equal
+   */
+  @Override
+  public int compareTo(Flight o) {
+    int srcCompare = this.src.compareTo(o.src);
+    if(srcCompare > 0){
+      return 1;
+    } else if(srcCompare < 0){
+      return -1;
+    }
+
+    int departCompare = this.depart.compareTo(o.depart);
+    if(departCompare > 0){
+      return 1;
+    } else if(departCompare < 0){
+      return -1;
+    }
+
+    return 0;
   }
 }
