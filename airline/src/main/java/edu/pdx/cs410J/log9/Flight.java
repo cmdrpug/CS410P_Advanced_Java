@@ -2,6 +2,10 @@ package edu.pdx.cs410J.log9;
 
 import edu.pdx.cs410J.AbstractFlight;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * The Flight class which extends the AbstractFlight class. Some variables
  * are final because they shouldn't change while some are mutable since they
@@ -11,8 +15,8 @@ public class Flight extends AbstractFlight {
 
   private final String src;
   private final String dest;
-  private String depart;
-  private String arrive;
+  private Date depart;
+  private Date arrive;
   private final int flightNumber;
 
   /**
@@ -25,7 +29,7 @@ public class Flight extends AbstractFlight {
    * @param arrive Arrival date and time (24-hour time) which is actually two arguments
    * @param flightNumber Identifying number for the Flight
    */
-  public Flight(String src, String dest, String depart, String arrive, int flightNumber) {
+  public Flight(String src, String dest, Date depart, Date arrive, int flightNumber) {
     this.src = src;
     this.dest = dest;
     this.depart = depart;
@@ -57,7 +61,10 @@ public class Flight extends AbstractFlight {
    */
   @Override
   public String getDepartureString() {
-    return this.depart;
+    DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+    dateFormat.setLenient(false);
+    String departString = dateFormat.format(this.depart);
+    return departString;
   }
 
   /**
@@ -75,6 +82,9 @@ public class Flight extends AbstractFlight {
    */
   @Override
   public String getArrivalString() {
-    return this.arrive;
+    DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+    dateFormat.setLenient(false);
+    String arriveString = dateFormat.format(this.arrive);
+    return arriveString;
   }
 }

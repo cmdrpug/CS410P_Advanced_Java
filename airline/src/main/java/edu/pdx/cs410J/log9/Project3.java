@@ -7,6 +7,7 @@ import edu.pdx.cs410J.ParserException;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static java.lang.Integer.parseInt;
 
@@ -26,21 +27,19 @@ public class Project3 {
    * @return returns the string dateAndTime if successful, otherwise null
    */
   @VisibleForTesting
-  static String formatDateAndTime(String date, String time, String argName) {
-    String dateAndTime = "";
-    try{
-      DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-      dateFormat.parse(date);
-      dateFormat.setLenient(false);
-      dateAndTime = date;
-    } catch(Exception err){
-      System.err.println(argName + " date must be in the format mm/dd/yyyy");
+  static Date formatDateAndTime(String date, String time, String argName) {
+    String toParse = date + " " + time;
+    Date dateAndTime = null;
+    if(!(time.matches("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"))){
+      System.err.println(argName + " date and time must be in the format mm/dd/yyyy hh:mm");
       return null;
     }
-    if(time.matches("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$")){
-      dateAndTime = dateAndTime + " " + time;
-    } else{
-      System.err.println(argName + " time must be a valid time in the format hh:mm");
+    try{
+      DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+      dateFormat.setLenient(false);
+      dateAndTime = dateFormat.parse(toParse);
+    } catch(Exception err){
+      System.err.println(argName + " date and time must be in the format mm/dd/yyyy hh:mm");
       return null;
     }
     return dateAndTime;
@@ -203,7 +202,7 @@ public class Project3 {
     String departDate = args[argCounter];
     String departTime = args[argCounter+1];
     argCounter += 2;
-    String depart = formatDateAndTime(departDate, departTime, "depart");
+    Date depart = formatDateAndTime(departDate, departTime, "depart");
     if(depart == null){
       return;
     }
@@ -226,8 +225,13 @@ public class Project3 {
     String arriveDate = args[argCounter];
     String arriveTime = args[argCounter+1];
     argCounter += 2;
-    String arrive = formatDateAndTime(arriveDate, arriveTime, "arrive");
+    Date arrive = formatDateAndTime(arriveDate, arriveTime, "arrive");
     if(arrive == null){
+      return;
+    }
+
+    if(depart.after(arrive)){
+      System.err.println("arrival time must be after departure time");
       return;
     }
 

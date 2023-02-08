@@ -7,6 +7,7 @@ import edu.pdx.cs410J.ParserException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Date;
 
 import static edu.pdx.cs410J.log9.Project3.formatDateAndTime;
 import static java.lang.Integer.parseInt;
@@ -85,7 +86,7 @@ public class TextParser implements AirlineParser<Airline> {
             String departDate = args[argCounter];
             String departTime = args[argCounter+1];
             argCounter += 2;
-            String depart = formatDateAndTime(departDate, departTime, "depart");
+            Date depart = formatDateAndTime(departDate, departTime, "depart");
             if(depart == null){
               throw new ParserException("Departure is formatted incorrectly on lines " + (counter + (argCounter - 7)) + " and " + (counter + (argCounter - 6)));
             }
@@ -105,11 +106,14 @@ public class TextParser implements AirlineParser<Airline> {
             String arriveDate = args[argCounter];
             String arriveTime = args[argCounter+1];
             argCounter += 2;
-            String arrive = formatDateAndTime(arriveDate, arriveTime, "arrive");
+            Date arrive = formatDateAndTime(arriveDate, arriveTime, "arrive");
             if(arrive == null){
               throw new ParserException("Departure is formatted incorrectly on lines " + (counter + (argCounter - 7)) + " and " + (counter + (argCounter - 6)));
             }
 
+            if(depart.after(arrive)){
+              throw new ParserException("Departure time is after arrival time for the flight starting on line " + counter);
+            }
 
             Flight flight = new Flight(src, dest, depart, arrive, flightNumber);
             airline.addFlight(flight);

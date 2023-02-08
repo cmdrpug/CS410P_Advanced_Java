@@ -2,6 +2,9 @@ package edu.pdx.cs410J.log9;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Date;
+
+import static edu.pdx.cs410J.log9.Project3.formatDateAndTime;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -36,7 +39,9 @@ public class AirlineTest {
     @Test
     void testAirlineAddAndGetFlights() {
         Airline testAirline = testAirlineConstructor();
-        Flight flight = new Flight("PDX", "LAX", "12/12/2005 1:55", "1/2/2005 11:19", 2854);
+        Date depart = formatDateAndTime("12/12/2005", "1:55", "depart");
+        Date arrive = formatDateAndTime("1/2/2005", "11:19", "arrive");
+        Flight flight = new Flight("PDX", "LAX", depart, arrive, 2854);
         testAirline.addFlight(flight);
         assertThat(testAirline.getFlights().iterator().next(), is(flight));
     }

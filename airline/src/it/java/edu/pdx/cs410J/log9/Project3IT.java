@@ -51,8 +51,8 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testCorrectArguments() {
-        MainMethodResult result = invokeMain("-print", "airline", "8932", "PDX", "12/12/2005", "1:55", "LAX", "1/2/2005", "11:19");
-        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 8932 departs PDX at 12/12/2005 1:55 arrives LAX at 1/2/2005 11:19"));
+        MainMethodResult result = invokeMain("-print", "airline", "8932", "PDX", "1/2/2005", "1:55", "LAX", "12/12/2005", "11:19");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 8932 departs PDX at 01/02/2005 01:55 arrives LAX at 12/12/2005 11:19"));
     }
 
     /**
@@ -123,7 +123,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void textFileNotFound(){
-        MainMethodResult result = invokeMain("-print", "-textFile", "text.txt", "airline", "8932", "PDX", "12/12/2005", "1:55", "LAX", "1/2/2005", "11:19");
-        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 8932 departs PDX at 12/12/2005 1:55 arrives LAX at 1/2/2005 11:19"));
+        MainMethodResult result = invokeMain("-print", "-textFile", "text.txt", "airline", "8932", "PDX", "1/2/2005", "1:55", "LAX", "12/12/2005", "11:19");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 8932 departs PDX at 01/02/2005 01:55 arrives LAX at 12/12/2005 11:19"));
     }
 }

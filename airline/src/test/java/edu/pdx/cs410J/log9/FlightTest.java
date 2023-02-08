@@ -2,6 +2,9 @@ package edu.pdx.cs410J.log9;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Date;
+
+import static edu.pdx.cs410J.log9.Project3.formatDateAndTime;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -16,7 +19,9 @@ public class FlightTest {
    * @return a Flight object with correctly parsed values
    */
   Flight testFlightConstructor() {
-    return new Flight("PDX", "LAX", "12/12/2005 1:55", "1/2/2005 11:19", 2854);
+    Date depart = formatDateAndTime("1/2/2005", "1:55", "depart");
+    Date arrive = formatDateAndTime("12/12/2005", "11:19", "arrive");
+    return new Flight("PDX", "LAX", depart, arrive, 2854);
   }
 
   /**
@@ -25,7 +30,7 @@ public class FlightTest {
   @Test
   void testFlightToString() {
     Flight testFlight = testFlightConstructor();
-    assertThat(testFlight.toString(), is("Flight 2854 departs PDX at 12/12/2005 1:55 arrives LAX at 1/2/2005 11:19"));
+    assertThat(testFlight.toString(), is("Flight 2854 departs PDX at 01/02/2005 01:55 arrives LAX at 12/12/2005 11:19"));
   }
 
   /**
@@ -52,7 +57,7 @@ public class FlightTest {
   @Test
   void testGetDepartureString() {
     Flight testFlight = testFlightConstructor();
-    assertThat(testFlight.getDepartureString(), is("12/12/2005 1:55"));
+    assertThat(testFlight.getDepartureString(), is("01/02/2005 01:55"));
   }
 
   /**
@@ -70,7 +75,7 @@ public class FlightTest {
   @Test
   void testGetArrivalString() {
     Flight testFlight = testFlightConstructor();
-    assertThat(testFlight.getArrivalString(), is("1/2/2005 11:19"));
+    assertThat(testFlight.getArrivalString(), is("12/12/2005 11:19"));
   }
   
 }

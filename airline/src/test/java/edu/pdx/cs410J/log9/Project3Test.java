@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Date;
 
 import static edu.pdx.cs410J.log9.Project3.formatDateAndTime;
 import static edu.pdx.cs410J.log9.Project3.printREADME;
@@ -69,20 +70,20 @@ class Project3Test {
     String singleDoubleTime = "1:12";
     String singleSingleTime = "1:2";
 
-    String testString = formatDateAndTime(doubleDoubleDate, doubleDoubleTime, "test");
-    assertNotNull(testString);
-    testString = formatDateAndTime(singleDoubleDate, singleDoubleTime, "test");
-    assertNotNull(testString);
-    testString = formatDateAndTime(doubleSingleDate, singleDoubleTime, "test");
-    assertNotNull(testString);
-    testString = formatDateAndTime(singleSingleDate, singleDoubleTime, "test");
-    assertNotNull(testString);
+    Date testDate = formatDateAndTime(doubleDoubleDate, doubleDoubleTime, "test");
+    assertNotNull(testDate);
+    testDate = formatDateAndTime(singleDoubleDate, singleDoubleTime, "test");
+    assertNotNull(testDate);
+    testDate = formatDateAndTime(doubleSingleDate, singleDoubleTime, "test");
+    assertNotNull(testDate);
+    testDate = formatDateAndTime(singleSingleDate, singleDoubleTime, "test");
+    assertNotNull(testDate);
 
-    testString = formatDateAndTime(doubleDoubleDate, doubleSingleTime, "test");
-    assertNull(testString);
-    testString = formatDateAndTime(doubleDoubleDate, singleSingleTime, "test");
-    assertNull(testString);
-    testString = formatDateAndTime(noneSingleDate, doubleDoubleTime, "test");
-    assertNull(testString);
+    testDate = formatDateAndTime(doubleDoubleDate, doubleSingleTime, "test");
+    assertNull(testDate);
+    testDate = formatDateAndTime(doubleDoubleDate, singleSingleTime, "test");
+    assertNull(testDate);
+    testDate = formatDateAndTime(noneSingleDate, doubleDoubleTime, "test");
+    assertNull(testDate);
   }
 }
