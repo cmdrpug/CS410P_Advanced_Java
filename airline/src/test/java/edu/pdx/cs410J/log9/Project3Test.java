@@ -65,10 +65,10 @@ class Project3Test {
     String singleDoubleDate = "2/12/2001";
     String singleSingleDate = "2/2/2001";
     String noneSingleDate = "/12/2003";
-    String doubleDoubleTime = "12:12";
-    String doubleSingleTime = "12:1";
-    String singleDoubleTime = "1:12";
-    String singleSingleTime = "1:2";
+    String doubleDoubleTime = "12:12 AM";
+    String doubleSingleTime = "12:1 PM";
+    String singleDoubleTime = "1:12 PM";
+    String singleSingleTime = "1:2 AM";
 
     Date testDate = formatDateAndTime(doubleDoubleDate, doubleDoubleTime, "test");
     assertNotNull(testDate);

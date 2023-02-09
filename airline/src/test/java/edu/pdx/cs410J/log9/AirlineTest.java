@@ -39,8 +39,8 @@ public class AirlineTest {
     @Test
     void testAirlineAddAndGetFlights() {
         Airline testAirline = testAirlineConstructor();
-        Date depart = formatDateAndTime("12/12/2005", "1:55", "depart");
-        Date arrive = formatDateAndTime("1/2/2005", "11:19", "arrive");
+        Date depart = formatDateAndTime("12/12/2005", "1:55 AM", "depart");
+        Date arrive = formatDateAndTime("1/2/2005", "12:19 PM", "arrive");
         Flight flight = new Flight("PDX", "LAX", depart, arrive, 2854);
         testAirline.addFlight(flight);
         assertThat(testAirline.getFlights().iterator().next(), is(flight));

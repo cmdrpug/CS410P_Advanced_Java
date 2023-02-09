@@ -108,7 +108,7 @@ public class TextParser implements AirlineParser<Airline> {
             argCounter += 2;
             Date arrive = formatDateAndTime(arriveDate, arriveTime, "arrive");
             if(arrive == null){
-              throw new ParserException("Departure is formatted incorrectly on lines " + (counter + (argCounter - 7)) + " and " + (counter + (argCounter - 6)));
+              throw new ParserException("Arrival is formatted incorrectly on lines " + (counter + (argCounter - 7)) + " and " + (counter + (argCounter - 6)));
             }
 
             if(depart.after(arrive)){

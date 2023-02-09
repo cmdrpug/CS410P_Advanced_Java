@@ -19,8 +19,8 @@ public class FlightTest {
    * @return a Flight object with correctly parsed values
    */
   Flight testFlightConstructor() {
-    Date depart = formatDateAndTime("1/2/2005", "1:55", "depart");
-    Date arrive = formatDateAndTime("12/12/2005", "11:19", "arrive");
+    Date depart = formatDateAndTime("1/2/2005", "1:55 AM", "depart");
+    Date arrive = formatDateAndTime("12/12/2005", "11:19 PM", "arrive");
     return new Flight("PDX", "LAX", depart, arrive, 2854);
   }
 
@@ -30,7 +30,7 @@ public class FlightTest {
   @Test
   void testFlightToString() {
     Flight testFlight = testFlightConstructor();
-    assertThat(testFlight.toString(), is("Flight 2854 departs PDX at 01/02/2005 01:55 arrives LAX at 12/12/2005 11:19"));
+    assertThat(testFlight.toString(), is("Flight 2854 departs PDX at 01/02/2005 01:55 AM arrives LAX at 12/12/2005 11:19 PM"));
   }
 
   /**
@@ -57,7 +57,7 @@ public class FlightTest {
   @Test
   void testGetDepartureString() {
     Flight testFlight = testFlightConstructor();
-    assertThat(testFlight.getDepartureString(), is("01/02/2005 01:55"));
+    assertThat(testFlight.getDepartureString(), is("01/02/2005 01:55 AM"));
   }
 
   /**
@@ -75,7 +75,7 @@ public class FlightTest {
   @Test
   void testGetArrivalString() {
     Flight testFlight = testFlightConstructor();
-    assertThat(testFlight.getArrivalString(), is("12/12/2005 11:19"));
+    assertThat(testFlight.getArrivalString(), is("12/12/2005 11:19 PM"));
   }
   
 }

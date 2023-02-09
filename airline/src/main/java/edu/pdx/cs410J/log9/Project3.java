@@ -30,16 +30,17 @@ public class Project3 {
   static Date formatDateAndTime(String date, String time, String argName) {
     String toParse = date + " " + time;
     Date dateAndTime = null;
-    if(!(time.matches("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"))){
-      System.err.println(argName + " date and time must be in the format mm/dd/yyyy hh:mm");
+    String[] timeNumber = time.split(" ");
+    if(!(timeNumber[0].matches("^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"))){
+      System.err.println(argName + " date and time must be in the format mm/dd/yyyy hh:mm a");
       return null;
     }
     try{
-      DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+      DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
       dateFormat.setLenient(false);
       dateAndTime = dateFormat.parse(toParse);
     } catch(Exception err){
-      System.err.println(argName + " date and time must be in the format mm/dd/yyyy hh:mm");
+      System.err.println(argName + " date and time must be in the format mm/dd/yyyy hh:mm a");
       return null;
     }
     return dateAndTime;
@@ -149,7 +150,7 @@ public class Project3 {
         break;
     }
 
-    if(args.length - firstNonOptionArg != 8){
+    if(args.length - firstNonOptionArg != 10){
       System.err.println(
         "Incorrect number of arguments supplied.\n" +
         "Usage: java -jar target/airline-2023.0.0.jar [options] <args>" +
@@ -157,16 +158,16 @@ public class Project3 {
         "airline \t\t The name of the airline\n" +
         "flightNumber \t The flight number\n" +
         "src  \t\t\t Three-letter code of departure airport\n" +
-        "depart \t\t Departure date and time (24-hour time)\n" +
+        "depart \t\t Departure date and time (12-hour time)\n" +
         "dest \t\t\t Three-letter code of arrival airport\n" +
-        "arrive \t\t Arrival date and time (24-hour time)\n\n" +
+        "arrive \t\t Arrival date and time (12-hour time)\n\n" +
         "options are (options may appear in any order):\n" +
         "-pretty file \t Pretty print the airline’s flights to\n" +
         "\t\t\t\t a text file or standard out (file -)\n" +
         "-TextFile file \t Where to read/write the airline info\n" +
         "-print \t\t\t Prints a description of the new flight\n" +
         "-README \t\t Prints a README for this project and exits\n" +
-        "Date and time should be in the format: mm/dd/yyyy hh:mm"
+        "Date and time should be in the format: MM/dd/yyyy HH:mm a"
       );
       return;
     }
@@ -201,7 +202,13 @@ public class Project3 {
 
     String departDate = args[argCounter];
     String departTime = args[argCounter+1];
-    argCounter += 2;
+    String departAmPm = args[argCounter+2].toUpperCase();
+    if(!(departAmPm.equals("AM") || departAmPm.equals("PM"))){
+      System.err.println("depart time was entered incorrectly, must be in the form hh:mm a");
+      return;
+    }
+    departTime = departTime + " " + departAmPm;
+    argCounter += 3;
     Date depart = formatDateAndTime(departDate, departTime, "depart");
     if(depart == null){
       return;
@@ -224,7 +231,13 @@ public class Project3 {
 
     String arriveDate = args[argCounter];
     String arriveTime = args[argCounter+1];
-    argCounter += 2;
+    String arriveAmPm = args[argCounter+2].toUpperCase();
+    if(!(arriveAmPm.equals("AM") ||arriveAmPm.equals("PM"))){
+      System.err.println("arrive time was entered incorrectly, must be in the form hh:mm a");
+      return;
+    }
+    arriveTime = arriveTime + " " + arriveAmPm;
+    argCounter += 3;
     Date arrive = formatDateAndTime(arriveDate, arriveTime, "arrive");
     if(arrive == null){
       return;

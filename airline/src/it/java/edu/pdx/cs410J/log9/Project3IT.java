@@ -33,7 +33,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testTooManyCommandLineArguments() {
-        MainMethodResult result = invokeMain("arg", "arg", "arg", "arg", "arg", "arg", "arg", "arg", "arg", "arg");
+        MainMethodResult result = invokeMain("arg", "arg", "arg", "arg", "arg", "arg", "arg", "arg", "arg", "arg", "arg");
         assertThat(result.getTextWrittenToStandardError(), containsString("Incorrect number of arguments supplied."));
     }
 
@@ -51,8 +51,44 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testCorrectArguments() {
-        MainMethodResult result = invokeMain("-print", "airline", "8932", "PDX", "1/2/2005", "1:55", "LAX", "12/12/2005", "11:19");
-        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 8932 departs PDX at 01/02/2005 01:55 arrives LAX at 12/12/2005 11:19"));
+        MainMethodResult result = invokeMain("-print", "airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 8932 departs PDX at 01/02/2005 01:55 AM arrives LAX at 12/12/2005 11:19 PM"));
+    }
+
+    /**
+     * Test if an invalid 12 hour time gets filtered out for arrive
+     */
+    @Test
+    void test24HourTimeDepart() {
+        MainMethodResult result = invokeMain("-print", "airline", "8932", "PDX", "1/2/2005", "21:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("depart date and time must be in the format mm/dd/yyyy hh:mm a"));
+    }
+
+    /**
+     * Test if an invalid 12 hour time gets filtered out for arrive
+     */
+    @Test
+    void test24HourTimeArrive() {
+        MainMethodResult result = invokeMain("-print", "airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "17:19", "PM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("arrive date and time must be in the format mm/dd/yyyy hh:mm a"));
+    }
+
+    /**
+     * Test if an invalid am/pm argument is filtered out for depart
+     */
+    @Test
+    void testAmPmWrongDepart() {
+        MainMethodResult result = invokeMain("-print", "airline", "8932", "PDX", "1/2/2005", "1:55", "time", "LAX", "12/12/2005", "17:19", "PM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("depart time was entered incorrectly, must be in the form hh:mm a"));
+    }
+
+    /**
+     *  Test if an invalid am/pm argument is filtered out for arrive
+     */
+    @Test
+    void testAmPmWrongArrive() {
+        MainMethodResult result = invokeMain("-print", "airline", "8932", "PDX", "1/2/2005", "1:55", "Pm", "LAX", "12/12/2005", "17:19", "time");
+        assertThat(result.getTextWrittenToStandardError(), containsString("arrive time was entered incorrectly, must be in the form hh:mm a"));
     }
 
     /**
@@ -60,7 +96,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testInvalidOption() {
-        MainMethodResult result = invokeMain("-corn", "airline", "8932", "PDX", "12/12/2005", "1:55", "LAX", "1/2/2005", "11:19");
+        MainMethodResult result = invokeMain("-corn", "airline", "8932", "PDX", "12/12/2005", "1:55", "AM", "LAX", "1/2/2005", "11:19", "PM");
         assertThat(result.getTextWrittenToStandardError(), containsString("Invalid Option: -corn was supplied"));
     }
 
@@ -69,7 +105,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testFlightNumberIsNotANumber() {
-        MainMethodResult result = invokeMain("-print", "airline", "89D32", "PDX", "12/12/2005", "1:55", "LAX", "1/2/2005", "11:19");
+        MainMethodResult result = invokeMain("-print", "airline", "89D32", "PDX", "12/12/2005", "1:55", "AM", "LAX", "1/2/2005", "11:19", "PM");
         assertThat(result.getTextWrittenToStandardError(), containsString("flightNumber must be a number"));
     }
 
@@ -78,7 +114,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testSrcIsNotAThreeLetterCode() {
-        MainMethodResult result = invokeMain("-print", "airline", "8932", "Goo goo", "12/12/2005", "1:55", "LAX", "1/2/2005", "11:19");
+        MainMethodResult result = invokeMain("-print", "airline", "8932", "Goo goo", "12/12/2005", "1:55", "AM", "LAX", "1/2/2005", "11:19", "PM");
         assertThat(result.getTextWrittenToStandardError(), containsString("src must be a 3 letters long"));
     }
 
@@ -87,7 +123,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testDestIsNotAThreeLetterCode() {
-        MainMethodResult result = invokeMain("-print", "airline", "8932", "PDX", "12/12/2005", "1:55", "Ga ga", "1/2/2005", "11:19");
+        MainMethodResult result = invokeMain("-print", "airline", "8932", "PDX", "12/12/2005", "1:55", "AM", "Ga ga", "1/2/2005", "11:19", "PM");
         assertThat(result.getTextWrittenToStandardError(), containsString("dest must be a 3 letters long"));
     }
 
@@ -105,7 +141,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void multipleTextFileOptions() {
-        MainMethodResult result = invokeMain("-print", "-textFile", "text.txt", "-textFile", "text2.txt", "airline", "8932", "PDX", "12/12/2005", "1:55", "Ga ga", "1/2/2005", "11:19");
+        MainMethodResult result = invokeMain("-print", "-textFile", "text.txt", "-textFile", "text2.txt", "airline", "8932", "PDX", "12/12/2005", "1:55", "AM", "Ga ga", "1/2/2005", "11:19", "PM");
         assertThat(result.getTextWrittenToStandardError(), containsString("Multiple .txt files cannot be used"));
     }
 
@@ -113,8 +149,8 @@ class Project3IT extends InvokeMainTestCase {
      * Tests that the text file missing ".txt" extension issues an error
      */
     @Test
-    void textFileOptionMissionExtension() {
-        MainMethodResult result = invokeMain("-print", "-textFile", "text", "airline", "8932", "PDX", "12/12/2005", "1:55", "Ga ga", "1/2/2005", "11:19");
+    void textFileOptionMissingExtension() {
+        MainMethodResult result = invokeMain("-print", "-textFile", "text", "airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
         assertThat(result.getTextWrittenToStandardError(), containsString("The specified file must be a .txt file"));
     }
 
@@ -123,25 +159,25 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void textFileNotFound(){
-        MainMethodResult result = invokeMain("-print", "-textFile", "text.txt", "airline", "8932", "PDX", "1/2/2005", "1:55", "LAX", "12/12/2005", "11:19");
-        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 8932 departs PDX at 01/02/2005 01:55 arrives LAX at 12/12/2005 11:19"));
+        MainMethodResult result = invokeMain("-print", "-textFile", "text.txt", "airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 8932 departs PDX at 01/02/2005 01:55 AM arrives LAX at 12/12/2005 11:19 PM"));
     }
 
     @Test
     void prettyPrintToStandardOut(){
-        MainMethodResult result = invokeMain("-pretty", "airline", "8932", "PDX", "1/2/2005", "1:55", "LAX", "12/12/2005", "11:19");
+        MainMethodResult result = invokeMain("-pretty", "airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flights belonging to airline:"));
     }
 
     @Test
     void multiplePrettyCallsFails(){
-        MainMethodResult result = invokeMain("-pretty", "pretty.txt", "-pretty", "pretty.txt", "airline", "8932", "PDX", "1/2/2005", "1:55", "LAX", "12/12/2005", "11:19");
+        MainMethodResult result = invokeMain("-pretty", "pretty.txt", "-pretty", "pretty.txt", "airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
         assertThat(result.getTextWrittenToStandardError(), containsString("Multiple .txt files cannot be used"));
     }
 
     @Test
     void prettyWithFile(){
-        MainMethodResult result = invokeMain("-pretty", "pretty.txt", "airline", "8932", "PDX", "1/2/2005", "1:55", "LAX", "12/12/2005", "11:19");
+        MainMethodResult result = invokeMain("-pretty", "pretty.txt", "airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
         assertThat(result.getTextWrittenToStandardError(), containsString(""));
     }
 }
