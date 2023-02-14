@@ -1,6 +1,5 @@
 package java8;
 
-import com.google.common.collect.Range;
 import com.sandwich.koan.Koan;
 
 import java.util.*;
