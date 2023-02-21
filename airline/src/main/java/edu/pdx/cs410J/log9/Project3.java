@@ -136,8 +136,13 @@ public class Project3 {
             prettyPrint = true;
             ++firstNonOptionArg;
             ++i;
-          } else {
+          } else if (args[i + 1].equals("-")){
             prettyPrint = true;
+            ++firstNonOptionArg;
+            ++i;
+          } else{
+            System.err.println("-pretty must be called with either a .txt file or -");
+            return;
           }
         }
         else{

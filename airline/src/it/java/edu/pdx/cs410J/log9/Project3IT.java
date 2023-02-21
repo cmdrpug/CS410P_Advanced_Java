@@ -164,8 +164,13 @@ class Project3IT extends InvokeMainTestCase {
     }
 
     @Test
-    void prettyPrintToStandardOut(){
+    void prettyPrintMissingArg(){
         MainMethodResult result = invokeMain("-pretty", "airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("-pretty must be called with either a .txt file or -"));
+    }
+    @Test
+    void prettyPrintToStandardOut(){
+        MainMethodResult result = invokeMain("-pretty", "-", "airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flights belonging to airline:"));
     }
 
