@@ -16,8 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
- * A unit test for code in the <code>Project3</code> class.  This is different
- * from <code>Project3IT</code> which is an integration test (and can capture data)
+ * A unit test for code in the <code>Project4</code> class.  This is different
+ * from <code>Project4IT</code> which is an integration test (and can capture data)
  * written to {@link System#out} and the like.
  */
 class Project4Test {
