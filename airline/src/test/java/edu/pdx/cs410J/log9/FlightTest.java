@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-import static edu.pdx.cs410J.log9.Project3.formatDateAndTime;
+import static edu.pdx.cs410J.log9.Project4.formatDateAndTime;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;

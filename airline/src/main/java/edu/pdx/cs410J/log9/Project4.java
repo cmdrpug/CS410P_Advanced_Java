@@ -14,7 +14,7 @@ import static java.lang.Integer.parseInt;
 /**
  * The main class for the CS410J airline Project
  */
-public class Project3 {
+public class Project4 {
 
   /**
    *  Returns a Date with the date and time arguments concatenated if both arguments
@@ -54,7 +54,7 @@ public class Project3 {
    */
   static void printREADME() throws IOException {
     try (
-      InputStream readme = Project3.class.getResourceAsStream("README.txt")
+      InputStream readme = Project4.class.getResourceAsStream("README.txt")
     ) {
       BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
       String line;
@@ -100,6 +100,7 @@ public class Project3 {
     int firstNonOptionArg = 0;
     File textFile = null;
     File prettyFile = null;
+    File xmlFile = null;
     boolean prettyPrint = false;
     boolean printFlight = false;
     for(int i = 0; i < args.length; ++i){
@@ -118,12 +119,31 @@ public class Project3 {
           if(textFile != null){
             System.err.println("Multiple .txt files cannot be used");
             return;
-          } else {
+          } else if(xmlFile != null){
+            System.err.println("Both -textFile and -xmlFile cannot be used");
+            return;
+          } else{
             if(args[i + 1] == null  || args[i + 1].equals("txt") || !(args[i + 1].substring(args[i + 1].lastIndexOf(".") + 1).equals("txt"))){
               System.err.println("The specified file must be a .txt file");
               return;
             }
             textFile = new File(args[i + 1]);
+            ++firstNonOptionArg;
+            ++i;
+          }
+        } else if (args[i].equals("-xmlFile")) {
+          if(xmlFile != null){
+            System.err.println("Multiple .xml files cannot be used");
+            return;
+          } else if(textFile != null){
+            System.err.println("Both -textFile and -xmlFile cannot be used");
+            return;
+          } else{
+            if(args[i + 1] == null  || args[i + 1].equals("xml") || !(args[i + 1].substring(args[i + 1].lastIndexOf(".") + 1).equals("xml"))){
+              System.err.println("The specified file must be a .xml file");
+              return;
+            }
+            xmlFile = new File("xmlTest.txt");//new File(args[i + 1]);
             ++firstNonOptionArg;
             ++i;
           }
@@ -167,6 +187,7 @@ public class Project3 {
         "dest \t\t\t Three-letter code of arrival airport\n" +
         "arrive \t\t Arrival date and time (12-hour time)\n\n" +
         "options are (options may appear in any order):\n" +
+        "- xmlFile file \t  Where to read/write the airline info\n" +
         "-pretty file \t Pretty print the airline’s flights to\n" +
         "\t\t\t\t a text file or standard out (file -)\n" +
         "-TextFile file \t Where to read/write the airline info\n" +
@@ -284,6 +305,10 @@ public class Project3 {
     } else{
       airline = new Airline(airlineName);
       airline.addFlight(newFlight);
+    }
+
+    if(xmlFile != null){
+      System.out.println("swag xml path");
     }
 
     if(printFlight){

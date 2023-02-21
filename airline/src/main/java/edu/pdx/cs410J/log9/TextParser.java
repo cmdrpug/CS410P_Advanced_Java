@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Date;
 
-import static edu.pdx.cs410J.log9.Project3.formatDateAndTime;
+import static edu.pdx.cs410J.log9.Project4.formatDateAndTime;
 import static java.lang.Integer.parseInt;
 
 /**
