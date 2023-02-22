@@ -137,6 +137,15 @@ class Project4IT extends InvokeMainTestCase {
     }
 
     /**
+     * test to see if arrive is after depart and if it isn't then error
+     */
+    @Test
+    void departAfterArrive(){
+        MainMethodResult result = invokeMain("-print", "-textFile", "text.txt", "airline", "8932", "PDX", "12/12/2005", "11:19", "PM", "LAX", "1/2/2005", "1:55", "AM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("arrival time must be after departure time"));
+    }
+
+    /**
      * Tests that using the -textFile option multiple times issues an error
      */
     @Test
@@ -163,26 +172,84 @@ class Project4IT extends InvokeMainTestCase {
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 8932 departs PDX at 01/02/2005 01:55 AM arrives LAX at 12/12/2005 11:19 PM"));
     }
 
+    /**
+     * error if pretty is called without an arg
+     */
     @Test
     void prettyPrintMissingArg(){
         MainMethodResult result = invokeMain("-pretty", "airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
         assertThat(result.getTextWrittenToStandardError(), containsString("-pretty must be called with either a .txt file or -"));
     }
+
+    /**
+     * pretty to standard out test
+     */
     @Test
     void prettyPrintToStandardOut(){
         MainMethodResult result = invokeMain("-pretty", "-", "airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flights belonging to airline:"));
     }
 
+    /**
+     * mulitple text files wiht the pretty flag fails
+     */
     @Test
     void multiplePrettyCallsFails(){
         MainMethodResult result = invokeMain("-pretty", "pretty.txt", "-pretty", "pretty.txt", "airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
         assertThat(result.getTextWrittenToStandardError(), containsString("Multiple .txt files cannot be used"));
     }
 
+    /**
+     * no errors when pretty prints to a file
+     */
     @Test
     void prettyWithFile(){
         MainMethodResult result = invokeMain("-pretty", "pretty.txt", "airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
         assertThat(result.getTextWrittenToStandardError(), containsString(""));
+    }
+
+    /**
+     * error when both xml and txt flags are called
+     */
+    @Test
+    void textAndXml(){
+        MainMethodResult result = invokeMain("-print", "-textFile", "text.txt", "-xmlFile", "text.xml", "airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Both -textFile and -xmlFile cannot be used"));
+    }
+
+    /**
+     * error when both xml and text flags are called in the other order
+     */
+    @Test
+    void xmlAndText(){
+        MainMethodResult result = invokeMain("-print", "-xmlFile", "text.xml", "-textFile", "text.text", "airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Both -textFile and -xmlFile cannot be used"));
+    }
+
+    /**
+     * multiple xml calls fails
+     */
+    @Test
+    void xmlAndXml(){
+        MainMethodResult result = invokeMain("-print", "-xmlFile", "text.xml", "-xmlFile", "text.xml", "airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Multiple .xml files cannot be used"));
+    }
+
+    /**
+     * xml file arg isn't a .xml file
+     */
+    @Test
+    void xmlMissingExtension(){
+        MainMethodResult result = invokeMain("-print", "-xmlFile", "text", "airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("The specified file must be a .xml file"));
+    }
+
+    /**
+     * works correctly with a xml file
+     */
+    @Test
+    void xmlCorrectPath(){
+        MainMethodResult result = invokeMain("-print", "-xmlFile", "text.xml", "airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 8932 departs PDX at 01/02/2005 01:55 AM arrives LAX at 12/12/2005 11:19 PM"));
     }
 }

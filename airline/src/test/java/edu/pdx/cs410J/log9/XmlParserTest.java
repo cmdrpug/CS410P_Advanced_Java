@@ -3,58 +3,35 @@ package edu.pdx.cs410J.log9;
 import edu.pdx.cs410J.ParserException;
 import org.junit.jupiter.api.Test;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 
+import static edu.pdx.cs410J.log9.Project4.formatDateAndTime;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit tests for the {@link TextParser} class.*
+ * Unit tests for the {@link XmlParser} class.*
  */
 public class XmlParserTest {
 
     /**
-     * Checks that a valid file can be parsed and matches
-     *
-     * @throws ParserException if the file does not match the correct format
+     * creates an airline, dumps it to xml, reads it back from xml and dumps it in a different file
+     * @throws IOException if the date is malformed
+     * @throws ParserException if fails to parse the file
      */
     @Test
-    void validTextFileCanBeParsed() throws ParserException {
-        InputStream resource = getClass().getResourceAsStream("valid-airline.txt");
-        assertThat(resource, notNullValue());
+    void airlineXmlParserTest() throws IOException, ParserException {
+        String airlineName = "Test Airline";
+        Airline airline = new Airline(airlineName);
+        airline.addFlight(new Flight("LAX", "PDX", formatDateAndTime("12/12/2005", "10:32 AM", "depart"), formatDateAndTime("12/13/2005", "11:11 PM", "arrive"), 8400));
+        XmlDumper dump = new XmlDumper(new FileWriter("xmltest.xml"));
+        dump.dump(airline);
 
-        TextParser parser = new TextParser(new InputStreamReader(resource));
-        Airline airline = parser.parse();
-        assertThat(airline.getName(), equalTo("Test Airline"));
-    }
-
-    /**
-     * If a file is empty then a ParserException is thrown
-     */
-    @Test
-    void invalidTextFileThrowsParserException() {
-        InputStream resource = getClass().getResourceAsStream("empty-airline.txt");
-        assertThat(resource, notNullValue());
-
-        TextParser parser = new TextParser(new InputStreamReader(resource));
-        assertThrows(ParserException.class, parser::parse);
-    }
-
-    /**
-     * Reads a correctly formatted file with flights in it and parses correctly
-     *
-     * @throws ParserException ParserException if the file does not match the correct format
-     */
-    @Test
-    void testCorrectPath() throws ParserException {
-        InputStream resource = getClass().getResourceAsStream("test.txt");
-        assertThat(resource, notNullValue());
-
-        TextParser parser = new TextParser(new InputStreamReader(resource));
-        Airline airline = parser.parse();
-        assertNotNull(airline);
+        XmlParser xmlParser = new XmlParser(new File("xmltest.xml"));
+        Airline airline2 = xmlParser.parse();
+        XmlDumper dump2 = new XmlDumper(new FileWriter("xmltest2.xml"));
+        dump2.dump(airline2);
     }
 }

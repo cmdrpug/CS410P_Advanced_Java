@@ -83,13 +83,14 @@ public class Project4 {
    * is printed and the program returns. After the last argument is parsed, this step
    * ends.
    *
-   * Step three is creating the airline and there are two main paths. If the textFile option
-   * was not included, a new Airline is created with the airlineName argument and the new Flight
+   * Step three is creating the airline and there are three main paths. If the textFile or xml options
+   * were not included, a new Airline is created with the airlineName argument and the new Flight
    * is added. If the textFile option was included and is a .txt file, then the reading/writing
    * branch is entered. If the file was not found, then a new Airline is created exactly like the
    * other path. If it was found and is formatted correctly, it is parsed into a new Airline from
    * the contents of the file, and then the new Flight from the command line is added after. After
    * the airline exists, it is written back to the same file or a new one if it didn't exist.
+   * If -xmlFile was included instead, the exact same process is run but to/from an xml file instead.
    *
    * Finally, step four is optionally printing the objects. The new flight created from
    * the command line is printed to System.out.
@@ -143,7 +144,7 @@ public class Project4 {
               System.err.println("The specified file must be a .xml file");
               return;
             }
-            xmlFile = new File("xmlTest.txt");//new File(args[i + 1]);
+            xmlFile = new File(args[i + 1]);
             ++firstNonOptionArg;
             ++i;
           }
@@ -303,7 +304,30 @@ public class Project4 {
         return;
       }
     } else if(xmlFile != null){
-      System.out.println("swag xml path");
+      try {
+        Reader reader = new FileReader(xmlFile);
+        XmlParser xmlParser = new XmlParser(xmlFile);
+        airline = xmlParser.parse();
+        if(!(airline.getName().equals(airlineName))){
+          System.err.println("The airline name provided on the command line does not match the one on file");
+          return;
+        }
+        airline.addFlight(newFlight);
+      } catch (ParserException e) {
+        System.err.println("xml file has malformed data");
+        return;
+      } catch (FileNotFoundException e) {
+        airline = new Airline(airlineName);
+        airline.addFlight(newFlight);
+      }
+
+      try{
+        XmlDumper xmlDumper = new XmlDumper(new FileWriter(xmlFile));
+        xmlDumper.dump(airline);
+      } catch (IOException e) {
+        System.err.println("File could not be created to write to");
+        return;
+      }
     } else{
       airline = new Airline(airlineName);
       airline.addFlight(newFlight);

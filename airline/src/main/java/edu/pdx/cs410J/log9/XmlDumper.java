@@ -18,9 +18,9 @@ import java.time.ZoneId;
 import java.util.Date;
 
 /**
- * The TextDumper class implements AirlineDumper interface.
+ * The XmlDumper class implements AirlineDumper interface.
  * It is used to create files in a format that can be read by the
- * TextParser on future runs of the program
+ * XmlParser on future runs of the program
  */
 public class XmlDumper implements AirlineDumper<Airline> {
     private final Writer writer;
@@ -34,9 +34,9 @@ public class XmlDumper implements AirlineDumper<Airline> {
     }
 
     /**
-     * First the airline name is printed on the first line of the file. Then
-     * for each flight in the airline, the depart and arrive strings are split
-     * and then all fields of the flight are written to the file.
+     * First the airline tag is created and its name is added as a child. Then
+     * for every flight, it goes into a loop creating every child needed and its
+     * attributes before moving on to the next.
      *
      * @param airline the Airline object to be dumped into a file
      */
@@ -56,9 +56,9 @@ public class XmlDumper implements AirlineDumper<Airline> {
             doc = dom.createDocument(null, "airline",
                     docType);
         } catch (ParserConfigurationException e) {
-
+            throw new RuntimeException("Parser failed to configure");
         } catch (DOMException e) {
-
+            throw new RuntimeException("DOM failed to create");
         }
 
         try {
@@ -114,7 +114,7 @@ public class XmlDumper implements AirlineDumper<Airline> {
                 xmlFlight.appendChild(arrive);
             });
         } catch (DOMException e) {
-
+            throw new RuntimeException("There was an issue while creating the DOM tree from the airline");
         }
 
         try {
@@ -129,8 +129,7 @@ public class XmlDumper implements AirlineDumper<Airline> {
                     OutputKeys.DOCTYPE_SYSTEM, AirlineXmlHelper.SYSTEM_ID);
             xform.transform(src, res);
         } catch (TransformerException e) {
-            e.printStackTrace(System.err);
-            System.exit(1);
+            throw new RuntimeException("Failed to convert DOM tree to an XML file");
         }
     }
 }
