@@ -68,6 +68,12 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
   }
 
   /**
+   * Utility function that gets the depart variable as a Java.util.Date Object
+   * @return the depart variable
+   */
+  public Date getDepartureDate(){return this.depart;}
+
+  /**
    * Get method for the dest variable
    * @return the dest variable
    */
@@ -87,6 +93,12 @@ public class Flight extends AbstractFlight implements Comparable<Flight>{
     String arriveString = dateFormat.format(this.arrive);
     return arriveString;
   }
+
+  /**
+   * Utility function that gets the arrive variable as a Java.util.Date Object
+   * @return the depart variable
+   */
+  public Date getArrivalDate(){return this.arrive;}
 
   /**
    * Comparable interface which orders first by src alphabetically, and then

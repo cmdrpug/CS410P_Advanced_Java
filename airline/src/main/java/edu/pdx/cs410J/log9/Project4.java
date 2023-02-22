@@ -302,13 +302,11 @@ public class Project4 {
         System.err.println("File could not be created to write to");
         return;
       }
+    } else if(xmlFile != null){
+      System.out.println("swag xml path");
     } else{
       airline = new Airline(airlineName);
       airline.addFlight(newFlight);
-    }
-
-    if(xmlFile != null){
-      System.out.println("swag xml path");
     }
 
     if(printFlight){
