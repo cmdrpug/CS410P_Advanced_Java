@@ -73,11 +73,11 @@ public class AirlineServlet extends HttpServlet {
       response.setStatus( HttpServletResponse.SC_OK);
   }
 
-  /**
+  /*/**
    * Handles an HTTP DELETE request by removing all dictionary entries.  This
    * behavior is exposed for testing purposes only.  It's probably not
    * something that you'd want a real application to expose.
-   */
+   *
   @Override
   protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
       response.setContentType("text/plain");
@@ -90,7 +90,7 @@ public class AirlineServlet extends HttpServlet {
 
       response.setStatus(HttpServletResponse.SC_OK);
 
-  }
+  }*/
 
   /**
    * Writes an error message about a missing parameter to the HTTP response.
