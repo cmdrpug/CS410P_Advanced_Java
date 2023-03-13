@@ -7,25 +7,45 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * PrettyPrinter for printing flights to console during searches
+ */
 public class PrettyPrinter {
   private final Writer writer;
 
+  /**
+   * Formats a string to print first when calling dump
+   *
+   * @param count the number of flights in the airline
+   * @param airlineName the name of the airline
+   * @return a formatted string displaying basic info about the airline
+   */
   @VisibleForTesting
-  static String formatWordCount(int count )
+  static String formatWordCount(int count, String airlineName)
   {
-    return String.format( "Airline on server contains %d flights", count );
+    return String.format( "The airline, " + airlineName + ", on server contains %d flights", count );
   }
 
+  /**
+   * Just sets the writing to a variable so the printer knows where to write
+   *
+   * @param writer where to write to
+   */
   public PrettyPrinter(Writer writer) {
     this.writer = writer;
   }
 
+  /**
+   * Pretty prints every flight in the airline to the writer
+   *
+   * @param airline the airline to print
+   */
   public void dump(Airline airline) {
     try (
       PrintWriter pw = new PrintWriter(this.writer)
     ) {
 
-      pw.println(formatWordCount(airline.getFlights().size()));
+      pw.println(formatWordCount(airline.getFlights().size(), airline.getName()));
 
       airline.getFlights().forEach(flight -> {
         String[] depart = flight.getDepartureString().split(" ", 2);
@@ -39,6 +59,15 @@ public class PrettyPrinter {
     }
   }
 
+  /**
+   * Pretty prints every flight in the airline to the writer that matches
+   * src and dest. If no flights match src and dest, a string saying so will
+   * be printed instead.
+   *
+   * @param airline the airline to print
+   * @param src the src to search by
+   * @param dest the destination to search by
+   */
   public void dump(Airline airline, String src, String dest) {
     try (
             PrintWriter pw = new PrintWriter(this.writer)
@@ -46,7 +75,7 @@ public class PrettyPrinter {
 
       AtomicInteger count = new AtomicInteger();
 
-      pw.println(formatWordCount(airline.getFlights().size()));
+      pw.println(formatWordCount(airline.getFlights().size(), airline.getName()));
 
       airline.getFlights().forEach(flight -> {
         String[] depart = flight.getDepartureString().split(" ", 2);
@@ -60,7 +89,7 @@ public class PrettyPrinter {
       });
 
       if (count.get() == 0){
-        pw.println("No flights are currently going from " + src + " to " + dest);
+        pw.println("No " + airline.getName() + " flights are currently going from " + src + " to " + dest);
       }
 
       pw.flush();

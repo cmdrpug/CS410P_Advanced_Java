@@ -17,6 +17,16 @@ import static java.lang.Integer.parseInt;
  * Airline server using REST.
  */
 public class Project5 {
+    /**
+     *  Returns a Date with the date and time arguments concatenated if both arguments
+     *  are valid dates and times respectively. Prints error message and returns null if
+     *  either argument does not match the format.
+     *
+     * @param date the date portion of the command line argument
+     * @param time the time portion of the command line argument
+     * @param argName which argument the date and time is for, used for error messages
+     * @return returns the string dateAndTime if successful, otherwise null
+     */
     @VisibleForTesting
     static Date formatDateAndTime(String date, String time, String argName) {
         String toParse = date + " " + time;
@@ -36,6 +46,13 @@ public class Project5 {
         }
         return dateAndTime;
     }
+
+    /**
+     * Gets the README.txt file as a resource and prints each line to console.
+     * Will throw an IOException if it fails for any reason.
+     *
+     * @throws IOException if the reader fails for any reason
+     */
     static void printREADME() throws IOException {
         try (
                 InputStream readme = Project5.class.getResourceAsStream("README.txt")
@@ -48,6 +65,12 @@ public class Project5 {
         }
     }
 
+    /**
+     * Main function for interacting with the server. Can add and search flights
+     * on the server while it's running.
+     *
+     * @param args the arguments on the command line that will be parsed an inputted to the program
+     */
     public static void main(String... args) {
         int firstNonOptionArg = 0;
         String hostName = null;
@@ -106,6 +129,31 @@ public class Project5 {
                 break;
         }
 
+        if((args.length - firstNonOptionArg) == 0) {
+            PrintStream err = System.err;
+            err.println("No arguments supplied.");
+            err.println("usage: java -jar target/airline-client.jar [options] <args>");
+            err.println("args are (in this order):");
+            err.println("  airline             The name of the airline");
+            err.println("  flightNumber        The flight number");
+            err.println("  src                 Three-letter code of departure airport");
+            err.println("  depart              Departure date/time");
+            err.println("  dest                Three-letter code of arrival airport");
+            err.println("  arrive              Arrival date/time");
+            err.println("options are (options may appear in any order):");
+            err.println("  -host hostname      Host of web server");
+            err.println("  -port port          Port number of web server");
+            err.println("  -search             Search for flights");
+            err.println("  -print              Prints a description of the new flight");
+            err.println("  -README             Prints a README for this project and exits");
+            err.println();
+            err.println("This simple program posts airlines and their flights to the server.");
+            err.println("If an airline and new flight arguments are supplied, the flight will be added to that airline");
+            err.println("If only the airline is supplied, prints all flights from that airline");
+            err.println("If -search is used, airlines can be searched by src and dest fields");
+            err.println();
+        }
+
         if(hostName == null){
             System.err.println("No -host option was used, both a host and port are needed.");
             return;
@@ -119,7 +167,7 @@ public class Project5 {
         try {
             port = Integer.parseInt( portString );
         } catch (NumberFormatException ex) {
-            System.err.println("-port value must be an integer");
+            System.err.println("-port value must be a number");
             return;
         }
 
@@ -253,7 +301,7 @@ public class Project5 {
             printer.dump(airline);
         } else {
             PrintStream err = System.err;
-            err.println("Incorrect number of arguments supplied for any action.");
+            err.println("Incorrect number of arguments supplied.");
             err.println("usage: java -jar target/airline-client.jar [options] <args>");
             err.println("args are (in this order):");
             err.println("  airline             The name of the airline");
