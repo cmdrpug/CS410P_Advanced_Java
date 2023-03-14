@@ -3,6 +3,7 @@ package edu.pdx.cs410J.log9;
 import com.google.common.annotations.VisibleForTesting;
 import edu.pdx.cs410J.AirportNames;
 import edu.pdx.cs410J.ParserException;
+import edu.pdx.cs410J.web.HttpRequestHelper;
 
 import java.io.*;
 import java.text.DateFormat;
@@ -129,7 +130,7 @@ public class Project5 {
                 break;
         }
 
-        if((args.length - firstNonOptionArg) == 0) {
+        if((args.length) == 0) {
             PrintStream err = System.err;
             err.println("No arguments supplied.");
             err.println("usage: java -jar target/airline-client.jar [options] <args>");
@@ -152,6 +153,7 @@ public class Project5 {
             err.println("If only the airline is supplied, prints all flights from that airline");
             err.println("If -search is used, airlines can be searched by src and dest fields");
             err.println();
+            return;
         }
 
         if(hostName == null){
@@ -190,8 +192,8 @@ public class Project5 {
             }
             int argCounter = firstNonOptionArg;
             String airlineName = args[argCounter];
-            String src = null;
-            String dest = null;
+            String src = "";
+            String dest = "";
             ++argCounter;
             if(argCounter != args.length){
                 src = args[argCounter];
@@ -200,12 +202,24 @@ public class Project5 {
                 ++argCounter;
             }
 
-            Airline airline = new Airline(airlineName); //get xml from server to create the airline!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            PrettyPrinter printer = new PrettyPrinter(new PrintWriter(System.out));
-            if(src == null || dest == null){
-                printer.dump(airline);
-            } else{
-                printer.dump(airline, src, dest);
+            try {
+                PrettyPrinter printer = new PrettyPrinter(new PrintWriter(System.out));
+                if (src.equals("") || dest.equals("")) {
+                    Airline airline = client.getAirline(airlineName);
+                    printer.dump(airline);
+                } else {
+                    Airline airline = client.getAirline(airlineName, src, dest);
+                    printer.dump(airline, src, dest);
+                }
+            } catch (ParserException e) {
+                System.err.println("NEW ERROR: " + e);
+                return;
+            } catch (IOException e) {
+                System.err.println("NEW ERROR: " + e);
+                return;
+            } catch (HttpRequestHelper.RestException e){
+                System.err.println("NEW ERROR: " + e);
+                return;
             }
 
         } else if((args.length - firstNonOptionArg) == 10) {
@@ -247,6 +261,7 @@ public class Project5 {
             departTime = departTime + " " + departAmPm;
             argCounter += 3;
             Date depart = formatDateAndTime(departDate, departTime, "depart");
+            String departString = departDate + " " + departTime;
             if(depart == null){
                 return;
             }
@@ -276,6 +291,7 @@ public class Project5 {
             arriveTime = arriveTime + " " + arriveAmPm;
             argCounter += 3;
             Date arrive = formatDateAndTime(arriveDate, arriveTime, "arrive");
+            String arriveString = arriveDate + " " + arriveTime;
             if(arrive == null){
                 return;
             }
@@ -286,7 +302,17 @@ public class Project5 {
             }
 
             Flight newFlight = new Flight(src, dest, depart, arrive, flightNumber);
-            //client.post(airlineName, newFlight);!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+            try {
+                client.postFlight(airlineName, src, dest, departString, arriveString, Integer.toString(flightNumber));
+            } catch (IOException e) {
+                System.err.println("NEW ERROR: " + e);
+                return;
+            } catch (HttpRequestHelper.RestException e){
+                System.err.println("NEW ERROR: " + e);
+                return;
+            }
+
             if(printFlight){
                 System.out.println("Newly added flight: \n" + newFlight + "\n");
             }
@@ -296,9 +322,20 @@ public class Project5 {
                 return;
             }
             String airlineName = args[firstNonOptionArg];
-            Airline airline = new Airline(airlineName); //get xml from server to create the airline!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            PrettyPrinter printer = new PrettyPrinter(new PrintWriter(System.out));
-            printer.dump(airline);
+            try{
+                Airline airline = client.getAirline(airlineName);
+                PrettyPrinter printer = new PrettyPrinter(new PrintWriter(System.out));
+                printer.dump(airline);
+            } catch (ParserException e) {
+                System.err.println("NEW ERROR: " + e);
+                return;
+            } catch (IOException e) {
+                System.err.println("NEW ERROR: " + e);
+                return;
+            } catch (HttpRequestHelper.RestException e){
+                System.err.println("NEW ERROR: " + e.getHttpStatusCode());
+                return;
+            }
         } else {
             PrintStream err = System.err;
             err.println("Incorrect number of arguments supplied.");

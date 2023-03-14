@@ -76,6 +76,15 @@ class Project5IT extends InvokeMainTestCase {
     }
 
     /**
+     * Tests for -host at end of args
+     */
+    @Test
+    void testHostAtEndOfArgs() {
+        MainMethodResult result = invokeMain("-host");
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("-host option was used without a value"));
+    }
+
+    /**
      * Tests for no -host option value
      */
     @Test
@@ -83,6 +92,7 @@ class Project5IT extends InvokeMainTestCase {
         MainMethodResult result = invokeMain("-host", "localHost", "-host", "localHost");
         assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("-host option was used multiple times, only one host can be specified"));
     }
+
 
     /**
      * Tests for no -Port option
@@ -99,6 +109,15 @@ class Project5IT extends InvokeMainTestCase {
     @Test
     void testNoPortOptionValue() {
         MainMethodResult result = invokeMain("-host", "localhost", "-port", "-print");
+        assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("-port option was used without a value"));
+    }
+
+    /**
+     * Tests for -port at end of args
+     */
+    @Test
+    void testPortAtEndOfArgs() {
+        MainMethodResult result = invokeMain("-host", "localhost", "-port");
         assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("-port option was used without a value"));
     }
 
@@ -145,6 +164,14 @@ class Project5IT extends InvokeMainTestCase {
     void testSearchWrongArgNum() {
         MainMethodResult result = invokeMain("-host", "localhost", "-port", "1267", "-search", "airline", "src");
         assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("Incorrect arguments for search option"));
+    }
+
+    /**
+     * Tests for searching with src and null dest args
+     */
+    @Test
+    void testSearchSrcNotDest() {
+        MainMethodResult result = invokeMain("-host", "localhost", "-port", "1267", "-search", "Airline", "PDX", "");
     }
 
     /**
@@ -283,10 +310,20 @@ class Project5IT extends InvokeMainTestCase {
     }
 
     /**
-     * Tests for new flight with good arguments and -print
+     * Tests for new flight with good arguments
      */
     @Test
     void testGoodAdd() {
+        MainMethodResult result = invokeMain("-host", "localhost", "-port", "1267", "Airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
+        //assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("arrival time must be after departure time"));
+    }
+
+
+    /**
+     * Tests for new flight with good arguments and -print
+     */
+    @Test
+    void testGoodAddWithPrint() {
         MainMethodResult result = invokeMain("-host", "localhost", "-port", "1267", "-print", "Airline", "8932", "PDX", "1/2/2005", "1:55", "AM", "LAX", "12/12/2005", "11:19", "PM");
         //assertThat(result.getTextWrittenToStandardError(), CoreMatchers.containsString("arrival time must be after departure time"));
     }
