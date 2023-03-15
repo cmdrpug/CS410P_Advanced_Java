@@ -52,10 +52,37 @@ public class AirlineServlet extends HttpServlet {
         XmlDumper dumper = new XmlDumper(pw);
         dumper.dump(airline);
       } else {
-        //PARSE SRC AND DEST!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        if(src.length() != 3){
+          System.err.println("src must be a 3 letters long");
+          return;
+        } else if(!(src.matches("[a-zA-Z]+"))){
+          System.err.println("src must contain only letters");
+          return;
+        } else if(AirportNames.getName(src.toUpperCase()) == null) {
+          System.err.println("src must be a known airport code");
+          return;
+        } else {
+          src = src.toUpperCase();
+        }
+
+        if(dest.length() != 3){
+          System.err.println("dest must be a 3 letters long");
+          return;
+        } else if(!(dest.matches("[a-zA-Z]+"))){
+          System.err.println("dest must contain only letters");
+          return;
+        } else if(AirportNames.getName(dest.toUpperCase()) == null) {
+          System.err.println("dest must be a known airport code");
+          return;
+        } else{
+          dest = dest.toUpperCase();
+        }
+
         Airline filteredAirline = new Airline(airlineName);
+        String finalSrc = src;
+        String finalDest = dest;
         airline.getFlights().forEach(flight -> {
-          if(src.equals(flight.getSource()) && dest.equals(flight.getDestination())) {
+          if(finalSrc.equals(flight.getSource()) && finalDest.equals(flight.getDestination())) {
             filteredAirline.addFlight(flight);
           }
         });

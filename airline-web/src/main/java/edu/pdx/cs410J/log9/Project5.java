@@ -6,6 +6,7 @@ import edu.pdx.cs410J.ParserException;
 import edu.pdx.cs410J.web.HttpRequestHelper;
 
 import java.io.*;
+import java.net.ConnectException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -196,9 +197,32 @@ public class Project5 {
             String dest = "";
             ++argCounter;
             if(argCounter != args.length){
-                src = args[argCounter];
+                if(args[argCounter].length() != 3){
+                    System.err.println("src must be a 3 letters long");
+                    return;
+                } else if(!(args[argCounter].matches("[a-zA-Z]+"))){
+                    System.err.println("src must contain only letters");
+                    return;
+                } else if(AirportNames.getName(args[argCounter].toUpperCase()) == null) {
+                    System.err.println("src must be a known airport code");
+                    return;
+                } else {
+                    src = args[argCounter].toUpperCase();
+                }
                 ++argCounter;
-                dest = args[argCounter];
+
+                if(args[argCounter].length() != 3){
+                    System.err.println("dest must be a 3 letters long");
+                    return;
+                } else if(!(args[argCounter].matches("[a-zA-Z]+"))){
+                    System.err.println("dest must contain only letters");
+                    return;
+                } else if(AirportNames.getName(args[argCounter].toUpperCase()) == null) {
+                    System.err.println("dest must be a known airport code");
+                    return;
+                } else{
+                    dest = args[argCounter].toUpperCase();
+                }
                 ++argCounter;
             }
 
@@ -212,13 +236,13 @@ public class Project5 {
                     printer.dump(airline, src, dest);
                 }
             } catch (ParserException e) {
-                System.err.println("NEW ERROR: " + e);
+                System.err.println("The data returned from the server was malformed and could not be read.");
                 return;
             } catch (IOException e) {
-                System.err.println("NEW ERROR: " + e);
+                System.err.println("Server refused to connect on " + hostName + " " + port);
                 return;
             } catch (HttpRequestHelper.RestException e){
-                System.err.println("NEW ERROR: " + e);
+                System.err.println("Error, sever responded with code " + e.getHttpStatusCode());
                 return;
             }
 
@@ -243,7 +267,7 @@ public class Project5 {
             } else if(!(args[argCounter].matches("[a-zA-Z]+"))){
                 System.err.println("src must contain only letters");
                 return;
-            } else if(AirportNames.getName(args[argCounter]) == null) {
+            } else if(AirportNames.getName(args[argCounter].toUpperCase()) == null) {
                 System.err.println("src must be a known airport code");
                 return;
             } else {
@@ -273,7 +297,7 @@ public class Project5 {
             } else if(!(args[argCounter].matches("[a-zA-Z]+"))){
                 System.err.println("dest must contain only letters");
                 return;
-            } else if(AirportNames.getName(args[argCounter]) == null) {
+            } else if(AirportNames.getName(args[argCounter].toUpperCase()) == null) {
                 System.err.println("dest must be a known airport code");
                 return;
             } else{
@@ -306,10 +330,10 @@ public class Project5 {
             try {
                 client.postFlight(airlineName, src, dest, departString, arriveString, Integer.toString(flightNumber));
             } catch (IOException e) {
-                System.err.println("NEW ERROR: " + e);
+                System.err.println("Server refused to connect on " + hostName + " " + port);
                 return;
             } catch (HttpRequestHelper.RestException e){
-                System.err.println("NEW ERROR: " + e);
+                System.err.println("Error, sever responded with code " + e.getHttpStatusCode());
                 return;
             }
 
@@ -327,13 +351,13 @@ public class Project5 {
                 PrettyPrinter printer = new PrettyPrinter(new PrintWriter(System.out));
                 printer.dump(airline);
             } catch (ParserException e) {
-                System.err.println("NEW ERROR: " + e);
+                System.err.println("The data returned from the server was malformed and could not be read.");
                 return;
             } catch (IOException e) {
-                System.err.println("NEW ERROR: " + e);
+                System.err.println("Server refused to connect on " + hostName + " " + port);
                 return;
             } catch (HttpRequestHelper.RestException e){
-                System.err.println("NEW ERROR: " + e.getHttpStatusCode());
+                System.err.println("Error, sever responded with code " + e.getHttpStatusCode());
                 return;
             }
         } else {
