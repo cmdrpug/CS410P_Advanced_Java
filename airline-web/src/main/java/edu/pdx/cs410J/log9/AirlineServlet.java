@@ -53,26 +53,26 @@ public class AirlineServlet extends HttpServlet {
         dumper.dump(airline);
       } else {
         if(src.length() != 3){
-          System.err.println("src must be a 3 letters long");
+          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
           return;
         } else if(!(src.matches("[a-zA-Z]+"))){
-          System.err.println("src must contain only letters");
+          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
           return;
         } else if(AirportNames.getName(src.toUpperCase()) == null) {
-          System.err.println("src must be a known airport code");
+          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
           return;
         } else {
           src = src.toUpperCase();
         }
 
         if(dest.length() != 3){
-          System.err.println("dest must be a 3 letters long");
+          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
           return;
         } else if(!(dest.matches("[a-zA-Z]+"))){
-          System.err.println("dest must contain only letters");
+          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
           return;
         } else if(AirportNames.getName(dest.toUpperCase()) == null) {
-          System.err.println("dest must be a known airport code");
+          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
           return;
         } else{
           dest = dest.toUpperCase();
