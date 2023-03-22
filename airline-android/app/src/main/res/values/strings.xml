@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Airline</string>
+    <string name="readme">410J Project 6 written by Logan Anderson \n\nThis is an app that allows you to create and search airline and their flights. It is broken into 3 main sections which you can access by clicking the respective buttons. \n\nClick on "CREATE AIRLINE" to create a new airline which you can add flights to. \n\nClick on "CREATE FLIGHT" create and add a new flight to an existing airline. \n\nClick on "SEARCH" to search for flights by airline, source, and destination. \n\nHave fun!</string>
 </resources>
