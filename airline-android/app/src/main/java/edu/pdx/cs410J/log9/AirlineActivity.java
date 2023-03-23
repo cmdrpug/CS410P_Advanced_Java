@@ -10,6 +10,12 @@ import android.widget.Toast;
 
 import org.checkerframework.checker.units.qual.A;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+
 public class AirlineActivity extends AppCompatActivity {
 
     @Override
@@ -31,12 +37,30 @@ public class AirlineActivity extends AppCompatActivity {
             return;
         }
 
+
+
         try {
             MainActivity.project6.addAirline(new Airline(airlineName));
         } catch (RuntimeException e) {
             Toast.makeText(this, "Airline already exists", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        StringWriter sw = new StringWriter();
+        TextDumper dumper = new TextDumper(sw);
+        dumper.dump(MainActivity.project6.searchAirline(airlineName));
+
+        String fileName = MainActivity.project6.searchAirline(airlineName).getName() + ".txt";
+        File path = getApplicationContext().getFilesDir();
+        try {
+            FileOutputStream writer = new FileOutputStream(new File(path, fileName));
+            writer.write(sw.toString().getBytes());
+            writer.close();
+        } catch (IOException e) {
+            Toast.makeText(this, "Airline could not be saved", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Toast.makeText(this, "Successfully created", Toast.LENGTH_SHORT).show();
     }
 }

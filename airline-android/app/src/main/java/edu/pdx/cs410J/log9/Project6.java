@@ -11,6 +11,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import edu.pdx.cs410J.log9.MainActivity;
+
 
 import static java.lang.Integer.parseInt;
 
@@ -30,10 +32,6 @@ public class Project6 {
      */
 
     private final Map<String, Airline> airlineMap = new HashMap<>();
-
-    public Project6(){
-
-    }
 
     @VisibleForTesting
     static Date formatDateAndTime(String date, String time, String argName) throws ParserException {
@@ -58,7 +56,6 @@ public class Project6 {
             throw new RuntimeException();
         }
         airlineMap.put(airline.getName(), airline);
-        //write new file to memory
     }
 
     public void addFlight(String airlineName, Flight flight) throws Resources.NotFoundException {
@@ -66,7 +63,6 @@ public class Project6 {
             throw new Resources.NotFoundException();
         }
         airlineMap.get(airlineName).addFlight(flight);
-        //update airline file in memory
     }
 
     public Airline searchAirline(String airlineName) throws Resources.NotFoundException {
@@ -97,6 +93,18 @@ public class Project6 {
         });
 
         return filteredAirline;
+    }
+
+    public void addFromFile(Reader reader, String airlineName){
+        if(airlineMap.get(airlineName) != null){
+            return;
+        }
+        TextParser parser = new TextParser(reader);
+        try {
+            airlineMap.put(airlineName, parser.parse());
+        } catch (ParserException e) {
+            return;
+        }
     }
 
 

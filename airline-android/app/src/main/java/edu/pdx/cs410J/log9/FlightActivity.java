@@ -13,6 +13,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Date;
 
 import edu.pdx.cs410J.AirportNames;
@@ -127,6 +131,22 @@ public class FlightActivity extends AppCompatActivity {
             Toast.makeText(this, "The airline you tried to add to does not exist", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        StringWriter sw = new StringWriter();
+        TextDumper dumper = new TextDumper(sw);
+        dumper.dump(MainActivity.project6.searchAirline(airlineName));
+
+        String fileName = MainActivity.project6.searchAirline(airlineName).getName() + ".txt";
+        File path = getApplicationContext().getFilesDir();
+        try {
+            FileOutputStream writer = new FileOutputStream(new File(path, fileName));
+            writer.write(sw.toString().getBytes());
+            writer.close();
+        } catch (IOException e) {
+            Toast.makeText(this, "Airline could not be saved", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Toast.makeText(this, "Successfully added", Toast.LENGTH_SHORT).show();
     }
 }

@@ -15,6 +15,11 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+
 public class MainActivity extends AppCompatActivity {
 
     public static Project6 project6 = new Project6();
@@ -24,6 +29,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        File path = getApplicationContext().getFilesDir();
+        for(File file : path.listFiles()){
+            if((file.getName().substring(file.getName().lastIndexOf(".") + 1).equals("txt"))){
+                String fileName = file.getName().replaceFirst("[.][^.]+$", "");
+                try {
+                    project6.addFromFile(new FileReader(file), fileName);
+                } catch (FileNotFoundException e) {
+
+                }
+            }
+        }
     }
 
     @Override
