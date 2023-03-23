@@ -58,7 +58,7 @@ public class Project6 {
             throw new RuntimeException();
         }
         airlineMap.put(airline.getName(), airline);
-        //write to memory
+        //write new file to memory
     }
 
     public void addFlight(String airlineName, Flight flight) throws Resources.NotFoundException {
@@ -66,15 +66,37 @@ public class Project6 {
             throw new Resources.NotFoundException();
         }
         airlineMap.get(airlineName).addFlight(flight);
-        //rewrite airline to memory
+        //update airline file in memory
     }
 
-    public void searchAirline(String airlineName) throws Resources.NotFoundException {
-        throw new Resources.NotFoundException();
+    public Airline searchAirline(String airlineName) throws Resources.NotFoundException {
+        if(airlineMap.get(airlineName) == null){
+            throw new Resources.NotFoundException();
+        }
+        Airline filteredAirline = new Airline(airlineName);
+        Airline airline = airlineMap.get(airlineName);
+
+        airline.getFlights().forEach(flight -> {
+            filteredAirline.addFlight(flight);
+        });
+
+        return filteredAirline;
     }
 
-    public void searchAirline(String airlineName, String src, String dest) throws Resources.NotFoundException {
-        throw new Resources.NotFoundException();
+    public Airline searchAirline(String airlineName, String src, String dest) throws Resources.NotFoundException {
+        if(airlineMap.get(airlineName) == null){
+            throw new Resources.NotFoundException();
+        }
+        Airline filteredAirline = new Airline(airlineName);
+        Airline airline = airlineMap.get(airlineName);
+
+        airline.getFlights().forEach(flight -> {
+            if(src.equals(flight.getSource()) && dest.equals(flight.getDestination())) {
+                filteredAirline.addFlight(flight);
+            }
+        });
+
+        return filteredAirline;
     }
 
 

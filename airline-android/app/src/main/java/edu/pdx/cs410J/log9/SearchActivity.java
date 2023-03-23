@@ -2,12 +2,18 @@ package edu.pdx.cs410J.log9;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.StringWriter;
 
 import edu.pdx.cs410J.AirportNames;
 
@@ -71,20 +77,40 @@ public class SearchActivity extends AppCompatActivity {
             }
         }
 
+        Airline airline = null;
         if(optional){
             try{
-                MainActivity.project6.searchAirline(airlineName);
+                airline = MainActivity.project6.searchAirline(airlineName, src, dest);
             } catch (Resources.NotFoundException e) {
                 Toast.makeText(this, "Airline does not exist", Toast.LENGTH_SHORT).show();
+                return;
             }
         } else{
             try {
-                MainActivity.project6.searchAirline(airlineName, src, dest);
+                airline = MainActivity.project6.searchAirline(airlineName);
             } catch (Resources.NotFoundException e) {
                 Toast.makeText(this, "Airline does not exist", Toast.LENGTH_SHORT).show();
+                return;
             }
         }
 
-        //print search
+        final Dialog searchResult = new Dialog(SearchActivity.this);
+        searchResult.setCancelable(true);
+        searchResult.setContentView(R.layout.search_dialog);
+        Button close = searchResult.findViewById(R.id.close);
+
+        close.setOnClickListener((e) -> {
+            searchResult.dismiss();
+        });
+
+        StringWriter sw = new StringWriter();
+        PrettyPrinter prettyPrinter = new PrettyPrinter(sw);
+        prettyPrinter.dump(airline);
+
+        TextView result = searchResult.findViewById(R.id.result);
+        result.setMovementMethod(new ScrollingMovementMethod());
+        result.setText(sw.toString());
+
+        searchResult.show();
     }
 }

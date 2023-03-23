@@ -33,7 +33,7 @@ public class PrettyPrinter {
 
       AtomicInteger count = new AtomicInteger(1);
 
-      pw.println("The airline, " + airline.getName() + ", on server contains " + airline.getFlights().size() + " flights");
+      pw.println("The airline, " + airline.getName() + ", contains " + airline.getFlights().size() + " flights matching your search");
 
       airline.getFlights().forEach(flight -> {
         String[] depart = flight.getDepartureString().split(" ", 2);
